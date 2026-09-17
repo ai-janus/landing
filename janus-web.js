@@ -144,7 +144,7 @@
     var movil = window.matchMedia("(max-width: 639px)").matches;
     var COLS = movil ? 18 : 40, FILAS = movil ? 9 : 18;   // celular: 162 puntos, no 720
     var TOTAL = COLS * FILAS;
-    var muestraCols = Math.round(COLS * (movil ? 0.22 : 0.14)), muestraFilas = Math.round(FILAS * (movil ? 0.33 : 0.22));
+    var muestraCols = movil ? 3 : 5; // la muestra auditada: una franja vertical a la izquierda, de arriba abajo
     var frag = document.createDocumentFragment();
     for (var d = 0; d < TOTAL; d++) {
       var i = document.createElement("i");
@@ -152,7 +152,7 @@
       var fila = Math.floor(d / COLS), col = d % COLS;
       var r = azar(d);
       var ej;
-      if (col < muestraCols && fila < muestraFilas) {
+      if (col < muestraCols) {
         i.className = "auditada"; ej = ejemploAuditado(d); i.setAttribute("data-k", "Auditada");
       } else if (r < 0.10) {
         i.className = "irregular"; ej = ejemploIrregular(d); i.setAttribute("data-k", "Nadie la revisó · fraude o desperdicio");
