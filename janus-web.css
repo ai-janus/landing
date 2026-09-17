@@ -228,7 +228,7 @@ html.js .seccion.visible .cuerpo > :nth-child(n+5) { transition-delay: 300ms; }
 .logos .celda .nombre { font-size: 15px; font-weight: var(--weight-semibold); letter-spacing: -0.01em; color: var(--ink); text-align: center; }
 
 /* Trama de la brecha (visual único, compacto) */
-.trama-wrap { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.trama-wrap { position: relative; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .leyenda .pista { color: var(--gray-400); }
 .trama { position: relative; display: grid; justify-content: space-between; grid-template-columns: repeat(40, 5px); row-gap: 17px; }
 .trama i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--gray-200); }
@@ -493,7 +493,7 @@ html.js .seccion.visible .cuerpo > :nth-child(n+5) { transition-delay: 300ms; }
   .trama .muestra { left: -5px; top: -6px; bottom: -6px; width: calc(2 / 17 * 100% + 16px); }
   .trama:not(.trama--js) { height: 140px; background-size: 20px 17px; }
   .trama-wrap { margin-top: 4px; }
-  .tip { position: static !important; width: auto; max-width: none; margin-top: 4px; }
+  .tip { position: static !important; width: auto; max-width: none; margin-top: 4px; grid-column: 1 / -1; }
   .tip::after { display: none; }
   .tip { max-width: calc(100% - 4px); }
   .tip__t { font-size: 12px; }

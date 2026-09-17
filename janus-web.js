@@ -142,34 +142,39 @@
     if (!el) return;
     el.classList.add("trama--js");
     var movil = window.matchMedia("(max-width: 639px)").matches;
-    var COLS = movil ? 18 : 40, FILAS = movil ? 9 : 18;   // celular: 162 puntos, no 720
-    var TOTAL = COLS * FILAS;
-    var muestraCols = movil ? 3 : 5; // la muestra auditada: una franja vertical a la izquierda, de arriba abajo
-    var frag = document.createDocumentFragment();
-    for (var d = 0; d < TOTAL; d++) {
-      var i = document.createElement("i");
-      i.setAttribute("aria-hidden", "true");
-      var fila = Math.floor(d / COLS), col = d % COLS;
-      var r = azar(d);
-      var ej;
-      if (col < muestraCols) {
-        i.className = "auditada"; ej = ejemploAuditado(d); i.setAttribute("data-k", "Auditada");
-      } else if (r < 0.10) {
-        i.className = "irregular"; ej = ejemploIrregular(d); i.setAttribute("data-k", "Nadie la revisó · fraude o desperdicio");
-      } else {
-        i.className = "correcta"; ej = ejemploCorrecto(d); i.setAttribute("data-k", "Nadie la revisó");
+    var COLS, FILAS, muestraCols, puntos, auditadas, rojas;
+    function generar() {
+      movil = window.matchMedia("(max-width: 639px)").matches;
+      COLS = movil ? 18 : 40; FILAS = movil ? 9 : 18;      // celular: 162 puntos, no 720
+      muestraCols = movil ? 3 : 5;                          // la muestra auditada: franja vertical a la izquierda, de arriba abajo
+      var viejos = el.querySelectorAll("i");
+      for (var v = 0; v < viejos.length; v++) el.removeChild(viejos[v]);
+      var frag = document.createDocumentFragment();
+      for (var d = 0; d < COLS * FILAS; d++) {
+        var i = document.createElement("i");
+        i.setAttribute("aria-hidden", "true");
+        var col = d % COLS, r = azar(d), ej;
+        if (col < muestraCols) {
+          i.className = "auditada"; ej = ejemploAuditado(d); i.setAttribute("data-k", "Auditada");
+        } else if (r < 0.10) {
+          i.className = "irregular"; ej = ejemploIrregular(d); i.setAttribute("data-k", "Nadie la revisó · fraude o desperdicio");
+        } else {
+          i.className = "correcta"; ej = ejemploCorrecto(d); i.setAttribute("data-k", "Nadie la revisó");
+        }
+        i.setAttribute("data-titulo", ej[0]); i.setAttribute("data-t", ej[1]);
+        frag.appendChild(i);
       }
-      i.setAttribute("data-titulo", ej[0]); i.setAttribute("data-t", ej[1]);
-      frag.appendChild(i);
+      el.appendChild(frag);
+      puntos = el.querySelectorAll("i"); auditadas = []; rojas = [];
+      for (var q = 0; q < puntos.length; q++) { if (puntos[q].classList.contains("auditada")) auditadas.push(puntos[q]); else if (puntos[q].classList.contains("irregular")) rojas.push(puntos[q]); }
     }
-    el.appendChild(frag);
-    var reducido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducido) el.classList.add("trama--lista"); else window.setTimeout(function () { el.classList.add("trama--lista"); }, 150);
+    generar();
+    var reducidoMov = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducidoMov) el.classList.add("trama--lista"); else window.setTimeout(function () { el.classList.add("trama--lista"); }, 150);
 
     // Tooltip anclado a la trama (no al cursor): así puede quedar abierto de entrada y recorrerse solo.
     var tip = document.getElementById("tip"), tk = tip.querySelector(".tip__k"), tti = tip.querySelector(".tip__titulo"), tt = tip.querySelector(".tip__t");
-    if (movil && el.parentNode) el.parentNode.appendChild(tip); // en celular el tooltip va debajo de la grilla, no encima
-    var puntos = el.querySelectorAll("i"), centros = null, actual = null, vecinos = [];
+    var centros = null, actual = null, vecinos = [];
     function medir() {
       centros = [];
       for (var k = 0; k < puntos.length; k++) { var r = puntos[k].getBoundingClientRect(); centros.push([r.left + r.width / 2, r.top + r.height / 2]); }
@@ -220,13 +225,19 @@
       }
       return mejor < 0 ? null : puntos[mejor];
     }
-    window.addEventListener("resize", function () { centros = null; }, { passive: true });
+    var ultimoMovil = movil, temporizadorResize = null;
+    window.addEventListener("resize", function () {
+      centros = null;
+      window.clearTimeout(temporizadorResize);
+      temporizadorResize = window.setTimeout(function () {
+        var ahora = window.matchMedia("(max-width: 639px)").matches;
+        if (ahora !== ultimoMovil) { ultimoMovil = ahora; ocultar(); generar(); recorrido.paso = 0; }
+      }, 150);
+    }, { passive: true });
     window.addEventListener("scroll", function () { centros = null; }, { passive: true });
 
     // Recorrido automático: "Lo que su equipo ve" por la muestra, "Lo que no vieron" por el resto.
     // El mouse lo interrumpe; se reanuda tras 5 s sin interacción sobre la trama.
-    var auditadas = [], rojas = [];
-    for (var q = 0; q < puntos.length; q++) { if (puntos[q].classList.contains("auditada")) auditadas.push(puntos[q]); else if (puntos[q].classList.contains("irregular")) rojas.push(puntos[q]); }
     var recorrido = { timer: null, paso: 0, activo: false, pausaHasta: 0 };
     var reducido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     function siguiente() {
@@ -237,7 +248,7 @@
       else { p = rojas[(recorrido.paso * 11 + n * 3) % rojas.length]; rot = "Lo que no vieron"; }
       if (p) mostrar(p, rot);
       recorrido.paso++;
-      recorrido.timer = window.setTimeout(siguiente, (n === 3 || n === 8 ? 2600 : 1900) * (movil ? 1.3 : 1));
+      recorrido.timer = window.setTimeout(siguiente, (n === 3 || n === 8 ? 2600 : 1900) * (ultimoMovil ? 1.3 : 1));
     }
     function pausar() { recorrido.activo = false; recorrido.pausaHasta = Date.now() + 5000; }
     el.addEventListener("mousemove", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
