@@ -95,7 +95,7 @@
   }
 
   // ---------- la grilla ----------
-  var el = document.getElementById("trama"), lienzo = document.getElementById("lienzo"), barrido = document.getElementById("barrido");
+  var el = document.getElementById("trama"), lienzo = document.getElementById("lienzo"), cobertura = document.getElementById("cobertura");
   var tip = document.getElementById("tip"), tk = tip.querySelector(".tip__k"), tti = tip.querySelector(".tip__titulo"), tt = tip.querySelector(".tip__t");
   var reducido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var COLS, FILAS, muestraCols, puntos = [], auditadas = [], rojas = [], centros = null, actual = null, vecinos = [], movil = false;
@@ -161,11 +161,10 @@
   function siguiente() {
     if (Date.now() < recorrido.pausaHasta) { recorrido.timer = window.setTimeout(siguiente, 400); return; }
     var p, rot, n = recorrido.paso % 9;
-    if (capitulo === "escapa" || capitulo === "motor") { p = rojas[(recorrido.paso * 11) % rojas.length]; rot = capitulo === "motor" ? "Detectada antes del pago" : "Lo que no vieron"; }
-    else if (capitulo === "brecha") { p = auditadas[(recorrido.paso * 7) % auditadas.length]; rot = "Lo que su equipo ve"; }
+    if (capitulo === "ahorro" || capitulo === "producto") { p = rojas[(recorrido.paso * 11) % rojas.length]; rot = capitulo === "producto" ? "Detectada antes del pago" : "Lo que no vieron"; }
     else if (n < 4) { p = auditadas[(recorrido.paso * 7 + n * 5) % auditadas.length]; rot = "Lo que su equipo ve"; }
     else { p = rojas[(recorrido.paso * 11 + n * 3) % rojas.length]; rot = "Lo que no vieron"; }
-    if (p && capitulo !== "auditores" && capitulo !== "empezar") mostrar(p, rot);
+    if (p && capitulo !== "auditores" && capitulo !== "implementacion") mostrar(p, rot);
     recorrido.paso++;
     recorrido.timer = window.setTimeout(siguiente, (n === 3 || n === 8 ? 2600 : 1900) * (movil ? 1.3 : 1));
   }
@@ -183,25 +182,25 @@
   var orden = caps.map(function (c) { return c.getAttribute("data-cap"); });
   var barridoTimer = null;
   function limpiarModo() {
-    escena.className = "escena";
+    escena.className = "escena" + (capitulo ? " abierto" : "");
     for (var k = 0; k < puntos.length; k++) puntos[k].classList.remove("detectada");
-    window.clearTimeout(barridoTimer); barrido.style.transition = "none"; barrido.style.left = "0%";
+    window.clearTimeout(barridoTimer); cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista");
   }
   function aplicarModo() {
     limpiarModo();
     if (!capitulo) return;
     escena.classList.add("modo-" + capitulo);
-    if (capitulo === "motor") {
-      // barrido de izquierda a derecha: al pasar, cada fraude queda marcado como detectado
-      var inicio = Date.now(), dur = reducido ? 0 : 2600;
+    if (capitulo === "producto") {
+      // barrida de cobertura de izquierda a derecha: al pasar, cada fraude queda marcado como detectado
+      var inicio = Date.now(), dur = reducido ? 0 : 2800;
       if (!centros) medir();
       var minX = Infinity, maxX = -Infinity; for (var k = 0; k < centros.length; k++) { minX = Math.min(minX, centros[k][0]); maxX = Math.max(maxX, centros[k][0]); }
-      barrido.style.transition = "none"; barrido.style.left = "0%";
-      window.requestAnimationFrame(function () { barrido.style.transition = "left " + dur + "ms linear"; barrido.style.left = "100%"; });
+      cobertura.style.transition = "none"; cobertura.style.width = "0%";
+      window.requestAnimationFrame(function () { cobertura.style.transition = "width " + dur + "ms linear"; cobertura.style.width = "100%"; });
       (function paso() {
         var f = dur ? Math.min(1, (Date.now() - inicio) / dur) : 1, x = minX + (maxX - minX) * f;
         for (var q = 0; q < puntos.length; q++) if (centros[q][0] <= x) puntos[q].classList.add("detectada");
-        if (f < 1) barridoTimer = window.setTimeout(paso, 40);
+        if (f < 1) barridoTimer = window.setTimeout(paso, 40); else cobertura.classList.add("cobertura--lista");
       })();
     }
     if (capitulo === "auditores") { // un caso en la mitad izquierda, lejos del panel
@@ -209,19 +208,22 @@
       for (var z = 0; z < rojas.length; z++) { var idx2 = Array.prototype.indexOf.call(puntos, rojas[z]); if ((idx2 % COLS) < COLS * 0.45 && Math.floor(idx2 / COLS) >= 3) { cand = rojas[z]; break; } }
       if (cand || rojas[0]) mostrar(cand || rojas[0], "Detectada antes del pago");
     }
-    if (capitulo === "empezar") ocultar();
+    if (capitulo === "implementacion") ocultar();
   }
   function abrir(id) {
     capitulo = id;
     caps.forEach(function (c) { c.classList.toggle("activa", c.getAttribute("data-cap") === id); });
     for (var h = 0; h < hojas.length; h++) hojas[h].classList.toggle("activa", hojas[h].getAttribute("data-cap") === id);
-    panel.hidden = false;
-    var i = orden.indexOf(id);
+    panel.hidden = false; escena.classList.add("abierto");
+    var i = orden.indexOf(id), hoja = document.querySelector('.hoja[data-cap="' + id + '"]');
     document.getElementById("panel-ant").disabled = i <= 0; document.getElementById("panel-sig").disabled = i >= orden.length - 1;
+    document.getElementById("panel-num").textContent = ("0" + (i + 1)) + " · " + (hoja ? hoja.getAttribute("data-nombre") : "");
+    document.getElementById("panel-pos").textContent = ("0" + (i + 1)) + " / 0" + orden.length;
+    document.getElementById("panel-cuerpo").scrollTop = 0;
     aplicarModo();
     recorrido.pausaHasta = 0;
   }
-  function cerrar() { capitulo = null; panel.hidden = true; caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
+  function cerrar() { capitulo = null; panel.hidden = true; escena.classList.remove("abierto"); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
   caps.forEach(function (c) { c.addEventListener("click", function () { var id = c.getAttribute("data-cap"); if (capitulo === id) cerrar(); else abrir(id); }); });
   document.getElementById("panel-cerrar").addEventListener("click", cerrar);
   document.getElementById("panel-ant").addEventListener("click", function () { var i = orden.indexOf(capitulo); if (i > 0) abrir(orden[i - 1]); });
@@ -231,7 +233,7 @@
     if (e.key === "ArrowRight") { var i = orden.indexOf(capitulo); abrir(orden[Math.min(orden.length - 1, i + 1)]); }
     if (e.key === "ArrowLeft") { var j = orden.indexOf(capitulo); if (j > 0) abrir(orden[j - 1]); }
   });
-  if (window.matchMedia("(hover: none)").matches) { var pista = document.querySelector(".hoja__pista"); if (pista) pista.textContent = "Toque los puntos rojos: cada uno es un caso."; }
+  if (window.matchMedia("(hover: none)").matches) { var pista = document.querySelector(".pista"); if (pista) pista.textContent = "Toque los puntos rojos: cada uno es un caso."; var pp = document.getElementById("pie-pista"); if (pp) pp.textContent = "Toque un capítulo para recorrerlo"; }
   // capítulo por URL (#motor, #auditores...) para compartir y para verificar estados
   function desdeHash() { var id = (location.hash || "").replace("#", ""); if (orden.indexOf(id) >= 0) abrir(id); }
   window.addEventListener("hashchange", desdeHash); window.setTimeout(desdeHash, 350);

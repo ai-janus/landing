@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="b.css?v=1">
+<link rel="stylesheet" href="b.css?v=3">
 </head>
 <body data-contacto="[CONTACTO]" data-asunto="Quiero usar Janus">
 
@@ -25,104 +25,144 @@
 
   <header class="barra">
     <a class="lockup" href="#" aria-label="Janus, inicio"><svg viewBox="20 18 60 54" aria-hidden="true"><polygon points="26,24 48,24 48,66 38,66"/><polygon points="74,24 52,24 52,66 62,66"/></svg><span class="wordmark">Janus</span></a>
-    <span class="barra__tag">Integridad de pagos · salud argentina</span>
-    <a class="btn btn--ink" href="#" data-cta="mail">Quiero usarlo</a>
+    <span class="barra__tag">Integridad de pagos · Sistema de salud argentino</span>
+    <a class="btn btn--ink" href="#implementacion" data-cta="mail">Quiero usarlo</a>
   </header>
 
   <div class="titular">
-    <h1>IA para la auditoría de liquidaciones médicas.<br><span class="valor">Máxima cobertura, máxima eficacia.</span></h1>
-    <p class="titular__linea">Auditamos el 100% de sus líneas. El motor propone; sus auditores deciden.</p>
+    <div class="titular__texto">
+      <h1>IA para la auditoría de liquidaciones médicas.<br><span class="valor">Máxima cobertura, máxima eficacia.</span></h1>
+      <p class="titular__linea">Validamos contra convenios y cartera, identificamos fraude y evitamos gasto improcedente. El motor propone; sus auditores deciden.</p>
+    </div>
+    <div class="cifras" aria-label="Cifras">
+      <div class="cifra"><span class="cifra__n">100%</span><span class="cifra__t">De las líneas, revisadas</span></div>
+      <div class="cifra"><span class="cifra__n valor">4x</span><span class="cifra__t">Retorno garantizado <span class="info"><button type="button" class="info__btn" aria-label="Cómo funciona la garantía de 4x">i</button><span class="info__texto" role="tooltip">Cobramos por línea auditada, más un variable por ahorro. En todos los casos garantizamos un retorno de 4x sobre lo que marque la auditoría.</span></span></span></div>
+      <div class="cifra"><span class="cifra__n">0</span><span class="cifra__t">Integraciones para empezar</span></div>
+    </div>
   </div>
 
   <div class="lienzo" id="lienzo">
     <div class="trama" id="trama" role="img" aria-label="Millones de líneas pagadas por mes: en gris las que nadie revisó, en rojo las que esconden fraude o desperdicio y se pagaron igual; la franja marca la muestra que la auditoría alcanza a mirar.">
+      <div class="cobertura" id="cobertura" aria-hidden="true"><span class="cobertura__rotulo">Janus audita el 100% de las líneas</span></div>
       <div class="muestra"><span class="muestra__rotulo">Lo que la auditoría alcanza a mirar</span></div>
-      <div class="barrido" id="barrido" aria-hidden="true"></div>
     </div>
     <div class="tip" id="tip" role="status" aria-live="polite" hidden><span class="tip__k"></span><span class="tip__titulo"></span><span class="tip__t"></span></div>
   </div>
 
   <nav class="capitulos" id="capitulos" aria-label="Capítulos">
-    <button type="button" class="cap" data-cap="brecha"><span class="n">01</span><span class="t">La brecha</span></button>
-    <button type="button" class="cap" data-cap="escapa"><span class="n">02</span><span class="t">Lo que se escapa</span></button>
-    <button type="button" class="cap" data-cap="motor"><span class="n">03</span><span class="t">El motor</span></button>
+    <button type="button" class="cap" data-cap="janus"><span class="n">01</span><span class="t">Janus</span></button>
+    <button type="button" class="cap" data-cap="ahorro"><span class="n">02</span><span class="t">Oportunidades de ahorro</span></button>
+    <button type="button" class="cap" data-cap="producto"><span class="n">03</span><span class="t">Nuestro producto</span></button>
     <button type="button" class="cap" data-cap="auditores"><span class="n">04</span><span class="t">Sus auditores</span></button>
-    <button type="button" class="cap" data-cap="empezar"><span class="n">05</span><span class="t">Empezar</span></button>
+    <button type="button" class="cap" data-cap="implementacion"><span class="n">05</span><span class="t">Implementación</span></button>
   </nav>
 
   <aside class="panel" id="panel" aria-live="polite" hidden>
-    <button type="button" class="panel__cerrar" id="panel-cerrar" aria-label="Cerrar">×</button>
-    <div class="panel__cuerpo">
+    <div class="panel__asa" aria-hidden="true"></div>
+    <div class="panel__cab"><span class="panel__num" id="panel-num">01 · Janus</span><button type="button" class="panel__cerrar" id="panel-cerrar" aria-label="Cerrar">×</button></div>
+    <div class="panel__cuerpo" id="panel-cuerpo">
 
-      <section class="hoja" data-cap="brecha">
-        <span class="hoja__n">01</span>
-        <h2>Millones de líneas por mes. Su equipo alcanza a mirar una franja.</h2>
-        <p>Revisar todo a mano es imposible, así que se audita por muestra. Todo lo demás se paga sin que nadie lo vea.</p>
-        <div class="dato"><span class="dato__n">100%</span><span class="dato__t">de las líneas se pagan. Una fracción se revisa.</span></div>
+      <section class="hoja" data-cap="janus" data-nombre="Janus">
+        <h2>Un motor de IA que audita el 100% de sus liquidaciones, antes de pagarlas.</h2>
+        <p>Cada línea se valida contra sus convenios y contra la historia estadística de su propia cartera. Cuando algo no cierra, el motor no tira una alarma: arma el caso, con la cláusula o la comparación que lo sostiene y con el monto. Y la decisión es siempre de sus auditores.</p>
+        <div class="bloque">
+          <h3>Construido por un equipo de tecnología y datos, con amplia experiencia en la región.</h3>
+          <div class="perfiles">
+            <div class="perfil"><span class="perfil__n">Pedro Landín</span><span class="perfil__r">Cofundador y CEO</span><span class="perfil__d">Bain &amp; Company, Rappi y Addi. Economista (UTDT).</span></div>
+            <div class="perfil"><span class="perfil__n">Ramiro Fernández</span><span class="perfil__r">Cofundador y CTO</span><span class="perfil__d">Arquitectura de datos en Addi, Rappi, GCBA y CONICET. Docente en la UBA.</span></div>
+          </div>
+          <div class="logos"><img src="assets/logos/bain.svg" alt="Bain &amp; Company" class="l-bain"><img src="assets/logos/rappi.svg" alt="Rappi" class="l-rappi"><img src="assets/logos/addi.svg" alt="Addi" class="l-addi"><img src="assets/logos/conicet.svg" alt="CONICET" class="l-conicet"><img src="assets/logos/gcba.svg" alt="Ciudad de Buenos Aires" class="l-gcba"><img src="assets/logos/uba.svg" alt="UBA" class="l-uba"></div>
+        </div>
       </section>
 
-      <section class="hoja" data-cap="escapa">
-        <span class="hoja__n">02</span>
-        <h2>En la brecha vive el fraude y el desperdicio.</h2>
-        <p>No hace falta imaginarlo. Son los patrones clásicos de cualquier cartera:</p>
-        <ul class="micro">
-          <li><b>40 jeringas</b> en una cirugía que usa 12.</li>
-          <li><b>La misma sesión</b>, cobrada dos veces.</li>
-          <li><b>55 consultas</b> en un solo día de consultorio.</li>
-          <li><b>Descartables aparte</b> del módulo que ya los incluye.</li>
-        </ul>
-        <p class="hoja__pista">Pase el mouse por los puntos rojos: cada uno es un caso.</p>
+      <section class="hoja" data-cap="ahorro" data-nombre="Oportunidades de ahorro">
+        <h2>Los modelos actuales fallan en escala, incluso ante casos típicos.</h2>
+        <p>Su equipo audita por muestra, porque revisar todo a mano es imposible. Todo lo que se paga sin que un ojo humano lo haya mirado es la brecha, y ahí vive el fraude y el desperdicio. Así se ve en cualquier cartera:</p>
+        <div class="hallazgos">
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><rect x="12" y="26" width="12" height="12" class="gris"/><rect x="40" y="26" width="12" height="12" class="gris"/><rect x="40" y="4" width="12" height="22" class="rojo"/><line x1="6" y1="38.5" x2="58" y2="38.5"/></svg><span class="t">Cantidades infladas</span><span class="d">40 jeringas en una cirugía que usa 12.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><rect x="5" y="7" width="36" height="26" rx="2"/><rect x="11" y="16" width="7" height="8" class="gris"/><rect x="20" y="16" width="7" height="8" class="gris"/><rect x="29" y="16" width="7" height="8" class="gris"/><rect x="50" y="16" width="7" height="8" class="rojo"/><line x1="41" y1="20" x2="50" y2="20" class="rojo-linea"/></svg><span class="t">Doble cobro del módulo</span><span class="d">Descartables facturados aparte del módulo que ya los incluye.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M10 6h16l6 6v22H10z"/><line x1="15" y1="18" x2="27" y2="18"/><line x1="15" y1="23" x2="27" y2="23"/><line x1="15" y1="28" x2="23" y2="28"/><path d="M30 10h16l6 6v22H30z" class="rojo-linea"/><line x1="35" y1="22" x2="47" y2="22" class="rojo-linea"/><line x1="35" y1="27" x2="47" y2="27" class="rojo-linea"/><line x1="35" y1="32" x2="43" y2="32" class="rojo-linea"/></svg><span class="t">Cuentas duplicadas</span><span class="d">La misma sesión, cobrada dos veces con 40 días de diferencia.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><rect x="8" y="10" width="48" height="26" rx="2"/><line x1="8" y1="17" x2="56" y2="17"/><rect x="12" y="21" width="8" height="3" class="gris"/><rect x="12" y="26" width="8" height="3" class="gris"/><rect x="12" y="31" width="8" height="3" class="gris"/><rect x="26" y="21" width="8" height="3" class="gris"/><rect x="26" y="26" width="8" height="3" class="gris"/><rect x="40" y="1" width="8" height="3" class="rojo"/><rect x="40" y="5" width="8" height="3" class="rojo"/><rect x="40" y="21" width="8" height="3" class="rojo"/><rect x="40" y="26" width="8" height="3" class="rojo"/><rect x="40" y="31" width="8" height="3" class="rojo"/></svg><span class="t">Agenda imposible</span><span class="d">55 consultas facturadas en un solo día de consultorio.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><rect x="4" y="12" width="9" height="16" class="gris"/><rect x="15" y="12" width="9" height="16" class="gris"/><rect x="26" y="12" width="9" height="16" class="gris"/><rect x="37" y="12" width="9" height="16" class="gris"/><rect x="48" y="12" width="9" height="16" class="rojo"/><path d="M50 6l7-4 0 8" class="rojo-linea"/><line x1="4" y1="32" x2="58" y2="32"/></svg><span class="t">Pensión sobre el alta</span><span class="d">Pensión completa facturada el día del alta.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><line x1="6" y1="16" x2="58" y2="16" stroke-dasharray="3 3"/><rect x="14" y="16" width="14" height="20" class="gris"/><rect x="38" y="16" width="14" height="20" class="gris"/><rect x="38" y="6" width="14" height="10" class="rojo"/><line x1="6" y1="36.5" x2="58" y2="36.5"/></svg><span class="t">Precio sobre la referencia</span><span class="d">Medicamento a precio de marca cuando el convenio paga valor de referencia.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><line x1="4" y1="22" x2="60" y2="22"/><path d="M12 14v16M12 14h4M12 30h4"/><path d="M40 14v16M40 14h-4M40 30h-4"/><circle cx="26" cy="22" r="3" class="gris"/><circle cx="52" cy="22" r="3.5" class="rojo"/></svg><span class="t">Fuera de ventana</span><span class="d">Práctica realizada a los 65 días de una orden válida por 60.</span></div>
+          <div class="hallazgo"><svg viewBox="0 0 64 40" aria-hidden="true"><rect x="10" y="8" width="16" height="28" class="gris"/><rect x="38" y="24" width="16" height="12" class="gris"/><path d="M28 12l8 6-8 6" class="rojo-linea"/><line x1="4" y1="36.5" x2="60" y2="36.5"/></svg><span class="t">Cuenta inconsistente</span><span class="d">Quirófano de máxima complejidad en una cirugía de porte menor.</span></div>
+        </div>
+        <p class="pista">Pase el mouse por los puntos rojos: cada uno es un caso.</p>
       </section>
 
-      <section class="hoja" data-cap="motor">
-        <span class="hoja__n">03</span>
-        <h2>Agentes que auditan el 100% de las líneas.</h2>
-        <p>Cada línea, contra su convenio y contra la historia de su propia cartera. Sobre una plataforma propia, donde cada convenio se vuelve reglas que se prueban antes de correr.</p>
-        <div class="dato"><span class="dato__n">0</span><span class="dato__t">integraciones para empezar. Un export, en el formato que su sistema ya sabe hacer.</span></div>
+      <section class="hoja" data-cap="producto" data-nombre="Nuestro producto">
+        <h2>Un sistema operativo de agentes de auditoría, sobre una plataforma propia.</h2>
+        <div class="eje">
+          <div class="eje__cab"><span class="eje__k">Eje 01</span><h3>Los agentes</h3><span class="eje__s">Auditan el 100% de las líneas, en cada ciclo.</span></div>
+          <ul class="items">
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 9l10-5 10 5-10 5z"/><path d="M4 14l10 5 10-5"/><path d="M4 19l10 5 10-5"/></svg><span><b>Preparan la data</b>Tipifican, agrupan por episodio y resuelven cada prestador a su convenio.</span></li>
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="4" y="4" width="20" height="20" rx="2"/><path d="M14 9v10M9 14h10" class="acento"/></svg><span><b>Proponen reglas nuevas</b>Leen sus convenios y detectan patrones repetidos. Ninguna corre sin aprobación.</span></li>
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 7h18M5 14h18M5 21h18"/><path d="M8 5l2 2-2 2M8 12l2 2-2 2M8 19l2 2-2 2" class="acento"/></svg><span><b>Ejecutan las reglas</b>Contra el convenio, contra su cartera y sobre lo que solo se ve en combinación.</span></li>
+          </ul>
+        </div>
+        <div class="loop" aria-hidden="true"><span class="loop__i">→ Reglas vigentes, con umbral</span><span class="loop__i">← Resultados y precisión medida</span><span class="loop__c">Cada ciclo, una vuelta</span></div>
+        <div class="eje">
+          <div class="eje__cab"><span class="eje__k">Eje 02</span><h3>La plataforma</h3><span class="eje__s">Gestión de convenios y reglas.</span></div>
+          <ul class="items">
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M6 6h16v16H6z"/><path d="M10 11h8M10 15h8M10 19h5"/></svg><span><b>Reglas escritas y legibles</b>Qué cláusula aplica, qué umbral usa, qué débito propone.</span></li>
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M9 14l3.5 3.5L19 11" class="acento"/></svg><span><b>Probadas antes de correr</b>Calibradas sobre su historia; corren recién cuando su precisión medida supera el piso acordado.</span></li>
+            <li><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="8" cy="7" r="3"/><circle cx="8" cy="21" r="3"/><circle cx="20" cy="14" r="3" class="acento-fill"/><path d="M8 10v8M10.5 8.5l7 4M10.5 19.5l7-4"/></svg><span><b>Versionadas y a la vista</b>Su auditor ve cada regla con su precisión medida, y la calibra.</span></li>
+          </ul>
+        </div>
       </section>
 
-      <section class="hoja" data-cap="auditores">
-        <span class="hoja__n">04</span>
+      <section class="hoja" data-cap="auditores" data-nombre="Sus auditores">
         <h2>El motor propone. Sus auditores deciden, siempre.</h2>
-        <p>Ningún caso llega como una alarma. Llega con la cláusula, la comparación y el monto, listo para decidir en minutos.</p>
+        <p>Ningún caso llega como una alarma. Llega con la regla que lo marcó, la cláusula o la comparación que lo sostiene, y el monto. Su auditor decide en minutos, y cada veredicto vuelve a la plataforma.</p>
+        <div class="bloque">
+          <span class="bloque__k">Lo que reciben ustedes</span>
+          <div class="recibe"><span class="recibe__n">01</span><span><b>Reportes por prestador y por práctica</b>Dónde está el desvío y cuánto vale.</span></div>
+          <div class="recibe"><span class="recibe__n">02</span><span><b>Cada regla a la vista, calibrable</b>Con su precisión medida: ajustan umbrales y apagan lo que no quieren.</span></div>
+          <div class="recibe"><span class="recibe__n">03</span><span><b>Un archivo por ciclo, línea por línea</b>Cada línea con su veredicto, su regla y su evidencia.</span></div>
+        </div>
         <div class="caso">
-          <div class="caso__cab"><span>Datos sintéticos</span><span>Decisión: su auditor</span></div>
+          <div class="caso__cab"><span>Así llega un caso · datos sintéticos</span><span>Decisión: su auditor</span></div>
           <h3>Descartables facturados aparte del módulo quirúrgico</h3>
           <div class="caso__fila"><span class="k">Regla</span><span>Inclusiones del módulo: el módulo ya incluye descartables.</span></div>
-          <div class="caso__fila"><span class="k">Comparación</span><span>40 unidades contra 12 de mediana en 318 casos comparables.</span></div>
+          <div class="caso__fila"><span class="k">Fuente</span><span>Convenio, Anexo I, cláusula 4.2. [Cláusula de ejemplo]</span></div>
+          <div class="caso__fila"><span class="k">Comparación</span><span>40 unidades contra 12 de mediana en 318 casos comparables de su cartera.</span></div>
           <div class="caso__fila"><span class="k">Ahorro</span><span class="monto">$ 1.240.500</span></div>
         </div>
       </section>
 
-      <section class="hoja" data-cap="empezar">
-        <span class="hoja__n">05</span>
-        <h2>Descubra cuánto se está escapando en sus cuentas.</h2>
-        <p>Un diagnóstico gratuito sobre sus cuentas ya pagadas. Sin integración, sin datos clínicos, sin fee. Resultados en semanas.</p>
-        <div class="dato"><span class="dato__n valor">4x</span><span class="dato__t">de retorno garantizado sobre lo que marque la auditoría. Cobramos por línea auditada, más un variable por ahorro.</span></div>
-        <div class="acciones">
-          <a class="btn btn--ink" href="#" data-cta="mail">Quiero usarlo</a>
-          <span class="mail" data-mail-texto>[CONTACTO]</span>
+      <section class="hoja" data-cap="implementacion" data-nombre="Implementación">
+        <h2>Resultados en semanas, sin un proyecto de sistemas.</h2>
+        <p>La entrada es un diagnóstico gratuito sobre sus cuentas ya pagadas: sin integración, sin datos clínicos y sin fee. En pocas semanas, hablamos con sus números sobre la mesa.</p>
+        <div class="bloque">
+          <div class="recibe"><span class="recibe__n">01</span><span><b>Sin cambiar de sistema</b>Un export en el formato que su sistema ya sabe hacer.</span></div>
+          <div class="recibe"><span class="recibe__n">02</span><span><b>Calibrado a sus convenios</b>Las reglas se leen de sus contratos y se prueban sobre su historia antes de correr.</span></div>
+          <div class="recibe"><span class="recibe__n">03</span><span><b>Resultados en semanas</b>Casos con evidencia, validados por sus auditores, y la medida de lo que se escapa por mes.</span></div>
         </div>
-        <div class="equipo">
-          <span class="equipo__t">Un equipo de tecnología y datos formado en</span>
-          <div class="logos"><img src="assets/logos/bain.svg" alt="Bain &amp; Company" class="l-bain"><img src="assets/logos/rappi.svg" alt="Rappi" class="l-rappi"><img src="assets/logos/addi.svg" alt="Addi" class="l-addi"><img src="assets/logos/conicet.svg" alt="CONICET" class="l-conicet"><img src="assets/logos/gcba.svg" alt="Ciudad de Buenos Aires" class="l-gcba"><img src="assets/logos/uba.svg" alt="UBA" class="l-uba"></div>
+        <div class="cierre">
+          <h3>Descubra cuánto se está escapando en sus cuentas.</h3>
+          <p>Sin compromiso. Respondemos en 24 horas.</p>
+          <div class="acciones"><a class="btn btn--papel" href="#implementacion" data-cta="mail">Quiero usarlo</a><span class="mail" data-mail-texto>[CONTACTO]</span></div>
+          <p class="cierre__nota">Cobramos por línea auditada, más un variable por ahorro. Garantizamos 4x de retorno sobre lo que marque la auditoría.</p>
         </div>
       </section>
 
     </div>
     <div class="panel__nav">
       <button type="button" class="panel__ant" id="panel-ant">← Anterior</button>
+      <span class="panel__pos" id="panel-pos">01 / 05</span>
       <button type="button" class="panel__sig" id="panel-sig">Siguiente →</button>
     </div>
   </aside>
 
   <footer class="pie">
     <span>© 2026 Janus · Buenos Aires</span>
+    <span class="pie__pista" id="pie-pista">Recorra los capítulos con ← →</span>
     <a href="[LINKEDIN]">LinkedIn</a>
   </footer>
 
 </div>
 
-<script src="b.js?v=1" defer></script>
+<script src="b.js?v=3" defer></script>
 </body>
 </html>
