@@ -204,6 +204,14 @@
       tk.textContent = rotulo || p.getAttribute("data-k"); tti.textContent = p.getAttribute("data-titulo"); tt.textContent = p.getAttribute("data-t");
       tip.classList.toggle("tip--irregular", p.classList.contains("irregular"));
       tip.hidden = false;
+      // En celular el tooltip es un bloque debajo de la grilla: nunca se posiciona por coordenadas
+      // (independiente del CSS que haya cargado, para que una mezcla de versiones no lo rompa).
+      if (window.matchMedia("(max-width: 639px)").matches || window.getComputedStyle(tip).position !== "absolute") {
+        tip.style.position = "static"; tip.style.left = ""; tip.style.top = ""; tip.style.width = ""; tip.style.maxWidth = "none"; tip.style.marginTop = "6px";
+        tip.classList.remove("tip--abajo");
+        return;
+      }
+      tip.style.position = ""; tip.style.marginTop = ""; tip.style.maxWidth = "";
       var w = tip.offsetWidth, h = tip.offsetHeight, tw = el.clientWidth;
       var cx = p.offsetLeft + p.offsetWidth / 2, cy = p.offsetTop + p.offsetHeight / 2;
       var left = Math.max(0, Math.min(cx - 16, tw - w));
