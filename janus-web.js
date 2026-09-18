@@ -129,7 +129,8 @@
   }
   function ejemploAuditado(d) {
     var r = azar(d + 61), m = MODULOS[Math.floor(azar(d + 7) * MODULOS.length)], med = MEDS[Math.floor(azar(d + 11) * MEDS.length)];
-    if (r < 0.6) return [m[0] + " · internación", "Cuenta de alto costo, revisada por auditoría médica. Auditada por su equipo."];
+    var INTERNAN = [0, 1, 2, 3, 6, 8, 10, 11], mi = MODULOS[INTERNAN[Math.floor(azar(d + 67) * INTERNAN.length)]];
+    if (r < 0.6) return [mi[0] + " · internación", "Cuenta de alto costo, revisada por auditoría médica. Auditada por su equipo."];
     return [med[0], "Medicación de alto costo, revisada por auditoría médica. Auditada por su equipo."];
   }
   function azar(n) { // hash entero determinístico por índice (sin rayas), para que cada punto diga siempre lo mismo

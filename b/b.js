@@ -85,7 +85,8 @@
   }
   function ejemploAuditado(d) {
     var r = azar(d + 61), m = MODULOS[Math.floor(azar(d + 7) * MODULOS.length)], med = MEDS[Math.floor(azar(d + 11) * MEDS.length)];
-    if (r < 0.6) return [m[0] + " · internación", "Cuenta de alto costo, revisada por auditoría médica. Auditada por su equipo."];
+    var INTERNAN = [0, 1, 2, 3, 6, 8, 10, 11], mi = MODULOS[INTERNAN[Math.floor(azar(d + 67) * INTERNAN.length)]];
+    if (r < 0.6) return [mi[0] + " · internación", "Cuenta de alto costo, revisada por auditoría médica. Auditada por su equipo."];
     return [med[0], "Medicación de alto costo, revisada por auditoría médica. Auditada por su equipo."];
   }
   function azar(n) { // hash entero determinístico por índice (sin rayas), para que cada punto diga siempre lo mismo
@@ -161,9 +162,10 @@
   function siguiente() {
     if (Date.now() < recorrido.pausaHasta) { recorrido.timer = window.setTimeout(siguiente, 400); return; }
     var p, rot, n = recorrido.paso % 9;
-    if (capitulo === "ahorro" || capitulo === "producto") { p = rojas[(recorrido.paso * 11) % rojas.length]; rot = capitulo === "producto" ? "Detectada antes del pago" : "Lo que no vieron"; }
+    var rotRojo = escena.classList.contains("cubierto") ? "Detectada antes del pago" : "Lo que no vieron";
+    if (capitulo === "ahorro" || capitulo === "producto") { p = rojas[(recorrido.paso * 11) % rojas.length]; rot = rotRojo; }
     else if (n < 4) { p = auditadas[(recorrido.paso * 7 + n * 5) % auditadas.length]; rot = "Lo que su equipo ve"; }
-    else { p = rojas[(recorrido.paso * 11 + n * 3) % rojas.length]; rot = "Lo que no vieron"; }
+    else { p = rojas[(recorrido.paso * 11 + n * 3) % rojas.length]; rot = rotRojo; }
     if (p && capitulo !== "auditores" && capitulo !== "implementacion") mostrar(p, rot);
     recorrido.paso++;
     recorrido.timer = window.setTimeout(siguiente, (n === 3 || n === 8 ? 2600 : 1900) * (movil ? 1.3 : 1));
@@ -171,39 +173,52 @@
   function pausar() { recorrido.pausaHasta = Date.now() + 5000; }
   el.addEventListener("mousemove", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
   el.addEventListener("click", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
-  if (!reducido) window.setTimeout(siguiente, 900); else if (rojas[0]) mostrar(rojas[0], "Lo que no vieron");
+  // Entrada: la cobertura barre la grilla apenas se carga; el recorrido arranca cuando termina.
+  var arrancado = false;
+  function arrancarRecorrido() { if (arrancado) return; arrancado = true; if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago"); }
+  window.setTimeout(function () { barrer(arrancarRecorrido); }, reducido ? 100 : 1400);
 
   var tResize = null, ultimo = modoAncho;
-  window.addEventListener("resize", function () { centros = null; window.clearTimeout(tResize); tResize = window.setTimeout(function () { if (ancho() !== ultimo) { ultimo = ancho(); ocultar(); generar(); aplicarModo(); } }, 150); }, { passive: true });
+  window.addEventListener("resize", function () { centros = null; window.clearTimeout(tResize); tResize = window.setTimeout(function () { if (ancho() !== ultimo) { ultimo = ancho(); ocultar(); generar(); if (capitulo) aplicarModo(); else barrer(); } }, 150); }, { passive: true });
   window.addEventListener("scroll", function () { centros = null; }, { passive: true });
 
   // ---------- capítulos: cada uno cambia lo que hace la grilla ----------
   var caps = Array.prototype.slice.call(document.querySelectorAll(".cap")), hojas = document.querySelectorAll(".hoja"), panel = document.getElementById("panel");
   var orden = caps.map(function (c) { return c.getAttribute("data-cap"); });
   var barridoTimer = null;
-  function limpiarModo() {
-    escena.className = "escena" + (capitulo ? " abierto" : "");
+  function quitarCobertura() {
+    escena.classList.remove("cubierto");
     for (var k = 0; k < puntos.length; k++) puntos[k].classList.remove("detectada");
     window.clearTimeout(barridoTimer); cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista");
   }
+  function barrer(alTerminar) {
+    // la cobertura de Janus barre la grilla de izquierda a derecha: cada fraude que pasa queda detectado
+    quitarCobertura();
+    escena.classList.add("cubierto");
+    var inicio = Date.now(), dur = reducido ? 0 : 2800;
+    centros = null; medir();
+    var minX = Infinity, maxX = -Infinity; for (var k = 0; k < centros.length; k++) { minX = Math.min(minX, centros[k][0]); maxX = Math.max(maxX, centros[k][0]); }
+    cobertura.style.transition = "none"; cobertura.style.width = "0%";
+    window.requestAnimationFrame(function () { cobertura.style.transition = "width " + dur + "ms linear"; cobertura.style.width = "100%"; });
+    (function paso() {
+      var f = dur ? Math.min(1, (Date.now() - inicio) / dur) : 1, x = minX + (maxX - minX) * f;
+      for (var q = 0; q < puntos.length; q++) if (centros[q][0] <= x) puntos[q].classList.add("detectada");
+      if (f < 1) barridoTimer = window.setTimeout(paso, 40); else { cobertura.classList.add("cobertura--lista"); if (alTerminar) window.setTimeout(alTerminar, 500); }
+    })();
+  }
+  function limpiarModo() {
+    var cubierto = escena.classList.contains("cubierto");
+    escena.className = "escena" + (capitulo ? " abierto" : "") + (cubierto ? " cubierto" : "");
+  }
   function aplicarModo() {
     limpiarModo();
-    if (!capitulo) return;
+    if (!capitulo) { if (!escena.classList.contains("cubierto")) barrer(); return; }
     escena.classList.add("modo-" + capitulo);
-    if (capitulo === "producto") {
-      // barrida de cobertura de izquierda a derecha: al pasar, cada fraude queda marcado como detectado
-      var inicio = Date.now(), dur = reducido ? 0 : 2800;
-      if (!centros) medir();
-      var minX = Infinity, maxX = -Infinity; for (var k = 0; k < centros.length; k++) { minX = Math.min(minX, centros[k][0]); maxX = Math.max(maxX, centros[k][0]); }
-      cobertura.style.transition = "none"; cobertura.style.width = "0%";
-      window.requestAnimationFrame(function () { cobertura.style.transition = "width " + dur + "ms linear"; cobertura.style.width = "100%"; });
-      (function paso() {
-        var f = dur ? Math.min(1, (Date.now() - inicio) / dur) : 1, x = minX + (maxX - minX) * f;
-        for (var q = 0; q < puntos.length; q++) if (centros[q][0] <= x) puntos[q].classList.add("detectada");
-        if (f < 1) barridoTimer = window.setTimeout(paso, 40); else cobertura.classList.add("cobertura--lista");
-      })();
-    }
+    if (capitulo === "ahorro") { quitarCobertura(); }                       // el problema crudo: sin cobertura, los rojos laten
+    if (capitulo === "producto") { barrer(); }                               // vuelve a barrer
+    if (capitulo === "janus" || capitulo === "implementacion") { if (!escena.classList.contains("cubierto")) barrer(); }
     if (capitulo === "auditores") { // un caso en la mitad izquierda, lejos del panel
+      if (!escena.classList.contains("cubierto")) barrer();
       var cand = null;
       for (var z = 0; z < rojas.length; z++) { var idx2 = Array.prototype.indexOf.call(puntos, rojas[z]); if ((idx2 % COLS) < COLS * 0.45 && Math.floor(idx2 / COLS) >= 3) { cand = rojas[z]; break; } }
       if (cand || rojas[0]) mostrar(cand || rojas[0], "Detectada antes del pago");
@@ -223,7 +238,7 @@
     aplicarModo();
     recorrido.pausaHasta = 0;
   }
-  function cerrar() { capitulo = null; panel.hidden = true; escena.classList.remove("abierto"); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
+  function cerrar() { capitulo = null; panel.hidden = true; escena.classList.remove("abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
   caps.forEach(function (c) { c.addEventListener("click", function () { var id = c.getAttribute("data-cap"); if (capitulo === id) cerrar(); else abrir(id); }); });
   document.getElementById("panel-cerrar").addEventListener("click", cerrar);
   document.getElementById("panel-ant").addEventListener("click", function () { var i = orden.indexOf(capitulo); if (i > 0) abrir(orden[i - 1]); });

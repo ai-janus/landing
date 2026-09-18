@@ -137,7 +137,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cobertura__rotulo { position: absolute; left: 8px; bottom: -26px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
 .cobertura--lista { border-right-color: transparent; }
 .cobertura--lista .cobertura__rotulo { opacity: 1; }
-.modo-producto .muestra__rotulo { opacity: 0; }
+.cubierto .muestra__rotulo { opacity: 0; }
+.modo-ahorro .cobertura { opacity: 0 !important; }
 .trama:not(.trama--js) { height: 380px; background-image: radial-gradient(circle, var(--gray-200) 2px, transparent 2px); background-size: 22px 22px; }
 .trama:not(.trama--js) .muestra { transform: none; }
 @media (prefers-reduced-motion: reduce) { .trama i, .trama .muestra { transition: none; } }
@@ -148,9 +149,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .modo-ahorro .trama i.irregular { animation: latir 1.6s ease-in-out infinite; }
 @keyframes latir { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.7); } }
 .modo-ahorro .trama i.irregular.activa { animation: none; }
-.modo-producto .cobertura { opacity: 1; }
-.modo-producto .trama i.irregular.detectada { background: var(--white); outline: 2px solid var(--fraude); outline-offset: 1px; transform: scale(1.3); border-radius: 50%; }
-.modo-producto .trama i.correcta.detectada { background: var(--gray-400); }
+.cubierto .cobertura { opacity: 1; }
+.cubierto .trama i.irregular.detectada { background: var(--white); outline: 2px solid var(--fraude); outline-offset: 1px; transform: scale(1.3); border-radius: 50%; }
+.cubierto .trama i.correcta.detectada { background: var(--gray-400); }
+.cubierto .trama i.irregular.detectada.activa { background: var(--fraude); outline-color: var(--white); transform: translateY(-1px) scale(3.2); }
 .modo-auditores .trama i:not(.activa):not(.auditada) { opacity: .45; }
 .modo-implementacion .trama i.correcta { opacity: .5; }
 @media (prefers-reduced-motion: reduce) { .modo-ahorro .trama i.irregular { animation: none; } }
