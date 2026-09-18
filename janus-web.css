@@ -542,3 +542,18 @@ html.js .seccion.visible .cuerpo > :nth-child(n+5) { transition-delay: 300ms; }
   .cierre__banda .acciones { flex-direction: column; align-items: flex-start; gap: 10px; }
   .footer { padding: 24px 0 32px; gap: 8px 20px; }
 }
+
+/* ---------- 10. v18: Eje 1 y Eje 2 con scroll lateral en celular y tablet ---------- */
+@media (max-width: 1023px) {
+  .ejes { display: flex; flex-wrap: nowrap; gap: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 0 8px; }
+  .ejes::-webkit-scrollbar { display: none; }
+  .ejes .eje { flex: 0 0 82%; max-width: 420px; scroll-snap-align: start; scroll-snap-stop: always; }
+  .ejes .loop { flex: 0 0 auto; width: 96px; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 0 4px; text-align: center; }
+  .ejes .loop .loop__item { flex-direction: column; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; }
+  .ejes .loop .loop__item::before { font-size: 20px; }
+  .ejes .loop .loop__item--ida::before { content: "→"; }
+  .ejes .loop .loop__item--vuelta::before { content: "←"; }
+  .ejes .loop .loop__ciclo { width: auto; font-size: 9px; }
+  .ejes-pista { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-top: -18px; }
+}
+@media (min-width: 1024px) { .ejes-pista { display: none; } }
