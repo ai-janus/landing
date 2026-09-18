@@ -109,6 +109,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .titular { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 18px 0 8px; align-items: end; }
 @media (min-width: 1024px) { .titular { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 40px; } }
 .titular h1 { font-size: var(--t-h1); font-weight: var(--weight-regular); line-height: 1.05; letter-spacing: -0.022em; max-width: 20ch; }
+.titular h1 .h1a, .titular h1 .h1b { display: block; }
 .titular__linea { margin-top: 14px; font-size: var(--t-lg); line-height: 1.45; color: var(--text-secondary); max-width: 62ch; }
 .cifras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 20px; padding-top: 14px; border-top: 1px solid var(--hair); }
 .cifra { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -323,3 +324,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .perfiles { grid-template-columns: minmax(0, 1fr); }
   .hallazgos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+/* ---------- coreografía de entrada (solo con JS; sin JS todo visible) ---------- */
+html.js .entra { opacity: 0; transform: translateY(10px); transition: opacity 620ms ease, transform 620ms cubic-bezier(.2,.7,.2,1); }
+html.js .entra.visto { opacity: 1; transform: none; }
+html.js .lienzo.entra { transform: none; }
+.escena.intro .muestra__rotulo { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { html.js .entra { opacity: 1; transform: none; transition: none; } }

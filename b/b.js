@@ -1,6 +1,7 @@
 /* Janus · landing B: la grilla es el centro; los capítulos cambian lo que hace la grilla. */
 (function () {
   "use strict";
+  document.documentElement.classList.add("js");
   var body = document.body, escena = document.getElementById("escena");
 
   // CTA por mailto desde las constantes del <body>
@@ -120,7 +121,7 @@
     for (var q = 0; q < puntos.length; q++) { if (puntos[q].classList.contains("auditada")) auditadas.push(puntos[q]); else if (puntos[q].classList.contains("irregular")) rojas.push(puntos[q]); }
   }
   el.classList.add("trama--js"); generar();
-  if (reducido) el.classList.add("trama--lista"); else window.setTimeout(function () { el.classList.add("trama--lista"); }, 200);
+  if (reducido) el.classList.add("trama--lista");
 
   function medir() { centros = []; for (var k = 0; k < puntos.length; k++) { var r = puntos[k].getBoundingClientRect(); centros.push([r.left + r.width / 2, r.top + r.height / 2]); } }
   var ALCANCE = 64;
@@ -173,10 +174,38 @@
   function pausar() { recorrido.pausaHasta = Date.now() + 5000; }
   el.addEventListener("mousemove", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
   el.addEventListener("click", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
-  // Entrada: la cobertura barre la grilla apenas se carga; el recorrido arranca cuando termina.
-  var arrancado = false;
+  // Entrada coreografiada: guía el orden de lectura (título → subtítulo → cifras → grilla → franja
+  // auditada → barrida de cobertura → capítulos → recorrido). Cualquier interacción la completa al instante.
+  var arrancado = false, introLista = false, introTimers = [];
   function arrancarRecorrido() { if (arrancado) return; arrancado = true; if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago"); }
-  window.setTimeout(function () { barrer(arrancarRecorrido); }, reducido ? 100 : 1400);
+  var entra = Array.prototype.slice.call(document.querySelectorAll(".entra"));
+  function ver(sel) { var els = typeof sel === "string" ? document.querySelectorAll(sel) : sel; for (var i = 0; i < els.length; i++) els[i].classList.add("visto"); }
+  function terminarIntro() {
+    if (introLista) return; introLista = true;
+    introTimers.forEach(function (t) { window.clearTimeout(t); });
+    ver(entra); el.classList.add("trama--lista"); escena.classList.remove("intro");
+    if (!escena.classList.contains("cubierto")) barrer(arrancarRecorrido); else arrancarRecorrido();
+  }
+  function intro() {
+    if (reducido) { terminarIntro(); return; }
+    escena.classList.add("intro");
+    var t = function (ms, fn) { introTimers.push(window.setTimeout(fn, ms)); };
+    t(80,   function () { ver(".h1a"); });
+    t(380,  function () { ver(".h1b"); });
+    t(720,  function () { ver(".titular__linea"); });
+    var cifras = document.querySelectorAll(".cifra");
+    t(1000, function () { ver(".cifras"); ver([cifras[0]]); }); t(1150, function () { ver([cifras[1]]); }); t(1300, function () { ver([cifras[2]]); });
+    t(1500, function () { ver(".lienzo"); });
+    t(1900, function () { el.classList.add("trama--lista"); });
+    t(2700, function () { barrer(function () {
+      escena.classList.remove("intro");
+      var caps = document.querySelectorAll(".cap");
+      for (var i = 0; i < caps.length; i++) (function (c, i) { introTimers.push(window.setTimeout(function () { ver([c]); }, i * 90)); })(caps[i], i);
+      introTimers.push(window.setTimeout(function () { ver(".pie"); introLista = true; arrancarRecorrido(); }, 520));
+    }); });
+  }
+  ["mousemove", "pointerdown", "keydown", "touchstart", "wheel"].forEach(function (ev) { window.addEventListener(ev, function () { if (!introLista) terminarIntro(); }, { passive: true, once: true }); });
+  intro();
 
   var tResize = null, ultimo = modoAncho;
   window.addEventListener("resize", function () { centros = null; window.clearTimeout(tResize); tResize = window.setTimeout(function () { if (ancho() !== ultimo) { ultimo = ancho(); ocultar(); generar(); if (capitulo) aplicarModo(); else barrer(); } }, 150); }, { passive: true });
@@ -231,6 +260,7 @@
     if (capitulo === "implementacion") ocultar();
   }
   function abrir(id) {
+    if (!introLista) terminarIntro();
     capitulo = id;
     caps.forEach(function (c) { c.classList.toggle("activa", c.getAttribute("data-cap") === id); });
     for (var h = 0; h < hojas.length; h++) hojas[h].classList.toggle("activa", hojas[h].getAttribute("data-cap") === id);
@@ -255,7 +285,7 @@
   });
   if (window.matchMedia("(hover: none)").matches) { var pista = document.querySelector(".pista"); if (pista) pista.textContent = "Toque los puntos rojos: cada uno es un caso."; var pp = document.getElementById("pie-pista"); if (pp) pp.textContent = "Toque un capítulo para recorrerlo"; }
   // capítulo por URL (#motor, #auditores...) para compartir y para verificar estados
-  function desdeHash() { var id = (location.hash || "").replace("#", ""); if (orden.indexOf(id) >= 0) abrir(id); }
+  function desdeHash() { var id = (location.hash || "").replace("#", ""); if (orden.indexOf(id) >= 0) { terminarIntro(); abrir(id); } }
   window.addEventListener("hashchange", desdeHash); window.setTimeout(desdeHash, 350);
   caps.forEach(function (c) { c.addEventListener("click", function () { if (capitulo) history.replaceState(null, "", "#" + capitulo); else history.replaceState(null, "", location.pathname); }); });
   // sugerencia de descubrimiento: a los 6 s sin interacción, el primer capítulo se ilumina un instante
