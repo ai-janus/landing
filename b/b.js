@@ -189,21 +189,26 @@
   function quitarCobertura() {
     escena.classList.remove("cubierto");
     for (var k = 0; k < puntos.length; k++) puntos[k].classList.remove("detectada");
-    window.clearTimeout(barridoTimer); cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista");
+    if (barridoTimer) window.cancelAnimationFrame(barridoTimer); barridoTimer = null;
+    cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista"); void cobertura.offsetWidth;
   }
   function barrer(alTerminar) {
-    // la cobertura de Janus barre la grilla de izquierda a derecha: cada fraude que pasa queda detectado
+    // la cobertura de Janus barre la grilla de izquierda a derecha: cada fraude que pasa queda detectado.
+    // El marcado sigue al borde REAL del velo (posición leída en cada frame), así van siempre sincronizados.
     quitarCobertura();
     escena.classList.add("cubierto");
-    var inicio = Date.now(), dur = reducido ? 0 : 2800;
+    var dur = reducido ? 0 : 2800;
     centros = null; medir();
-    var minX = Infinity, maxX = -Infinity; for (var k = 0; k < centros.length; k++) { minX = Math.min(minX, centros[k][0]); maxX = Math.max(maxX, centros[k][0]); }
     cobertura.style.transition = "none"; cobertura.style.width = "0%";
-    window.requestAnimationFrame(function () { cobertura.style.transition = "width " + dur + "ms linear"; cobertura.style.width = "100%"; });
+    void cobertura.offsetWidth; // fuerza el reflow: el ancho 0 queda aplicado antes de animar
+    if (dur) { cobertura.style.transition = "width " + dur + "ms cubic-bezier(.4,0,.2,1)"; }
+    cobertura.style.width = "100%";
+    var inicio = Date.now();
     (function paso() {
-      var f = dur ? Math.min(1, (Date.now() - inicio) / dur) : 1, x = minX + (maxX - minX) * f;
-      for (var q = 0; q < puntos.length; q++) if (centros[q][0] <= x) puntos[q].classList.add("detectada");
-      if (f < 1) barridoTimer = window.setTimeout(paso, 40); else { cobertura.classList.add("cobertura--lista"); if (alTerminar) window.setTimeout(alTerminar, 500); }
+      var borde = cobertura.getBoundingClientRect().right, listo = dur ? (Date.now() - inicio >= dur + 60) : true;
+      for (var q = 0; q < puntos.length; q++) if (listo || centros[q][0] <= borde) puntos[q].classList.add("detectada");
+      if (!listo) barridoTimer = window.requestAnimationFrame(paso);
+      else { cobertura.classList.add("cobertura--lista"); if (alTerminar) window.setTimeout(alTerminar, 500); }
     })();
   }
   function limpiarModo() {
