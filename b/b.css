@@ -122,8 +122,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @media (max-width: 1023px) { .info__texto { left: auto; right: -8px; } }
 
 /* lienzo: la grilla */
-.lienzo { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 22px 0 10px; min-height: 0; }
-.trama { position: relative; display: grid; justify-content: space-between; grid-template-columns: repeat(56, 5px); row-gap: var(--fila, 18px); width: 100%; }
+.lienzo { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 16px 0 42px; min-height: 0; }
+.trama { position: relative; display: grid; justify-content: space-between; grid-template-columns: repeat(56, 5px); row-gap: var(--fila, 16px); width: 100%; }
 .trama i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--gray-200); cursor: crosshair; transition: transform 260ms cubic-bezier(.15,.8,.25,1), background-color 200ms ease, opacity 300ms ease, box-shadow 200ms ease; will-change: transform; }
 .trama i.irregular { background: var(--fraude); }
 .trama i.auditada { background: var(--gray-400); }
@@ -133,13 +133,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .trama i.activa.auditada { background: var(--ink); transform: translateY(-1px) scale(3.1); }
 .trama .muestra { position: absolute; left: -8px; top: -10px; bottom: -10px; width: calc(5 / 55 * 100% + 21px); border: 1.5px solid var(--accent); border-radius: 6px; background: color-mix(in srgb, var(--accent) 8%, transparent); transform: scaleX(0); transform-origin: left center; transition: transform 700ms cubic-bezier(.2,.7,.2,1), background-color 400ms ease; pointer-events: none; }
 .trama--lista .muestra { transform: scaleX(1); }
-.muestra__rotulo { position: absolute; left: 0; bottom: -26px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
+.muestra__rotulo { position: absolute; left: 0; bottom: -24px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
 .cobertura { position: absolute; left: -8px; top: -10px; bottom: -10px; width: 0%; border-radius: 6px; background: color-mix(in srgb, var(--accent) 7%, transparent); pointer-events: none; opacity: 0; }
 .cobertura::after { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; width: 2px; background: var(--accent); box-shadow: -14px 0 24px color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 2px; transition: opacity 400ms ease; }
 .cobertura--lista::after { opacity: 0; }
-.cobertura__rotulo { position: absolute; left: 8px; bottom: -26px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
+.cobertura__rotulo { position: absolute; left: 0; bottom: -44px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
 .cobertura--lista .cobertura__rotulo { opacity: 1; }
-.cubierto .muestra__rotulo { opacity: 0; }
+.cubierto:not(.modo-janus) .muestra__rotulo { opacity: 0; }
 .modo-ahorro .cobertura { opacity: 0 !important; }
 .trama:not(.trama--js) { height: 380px; background-image: radial-gradient(circle, var(--gray-200) 2px, transparent 2px); background-size: 22px 22px; }
 .trama:not(.trama--js) .muestra { transform: none; }
@@ -170,7 +170,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tip__t { font-size: var(--t-sm); line-height: 1.45; color: var(--text-secondary); }
 
 /* capítulos: píldoras abajo */
-.capitulos { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 16px 0 10px; }
+.capitulos { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 10px 0 8px; }
 .capitulos::-webkit-scrollbar { display: none; }
 .cap { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px 0 12px; border-radius: 999px; border: 1px solid var(--hair-strong); background: color-mix(in srgb, var(--white) 70%, transparent); font-size: 14px; font-weight: var(--weight-medium); white-space: nowrap; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
 .cap .n { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--gray-400); }
@@ -191,8 +191,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hoja { display: none; flex-direction: column; gap: 16px; }
 .hoja.activa { display: flex; animation: aparecer 260ms ease; }
 @keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.hoja h2 { font-size: var(--t-h2); font-weight: var(--weight-regular); line-height: 1.08; letter-spacing: -0.02em; }
-.hoja h3 { font-size: var(--t-h3); font-weight: var(--weight-medium); line-height: 1.25; letter-spacing: -0.01em; }
+.hoja h2 { font-size: var(--t-h2); font-weight: var(--weight-bold); line-height: 1.08; letter-spacing: -0.02em; }
+.hoja h3 { font-size: var(--t-h3); font-weight: var(--weight-semibold); line-height: 1.25; letter-spacing: -0.01em; }
 .hoja p { font-size: var(--t-md); color: var(--text-secondary); }
 .hoja p.pista { font-size: var(--t-sm); color: var(--accent); }
 .bloque { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--hair); }
@@ -259,7 +259,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cierre { position: relative; overflow: hidden; background: var(--ink); color: var(--paper); border-radius: 12px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px; }
 .cierre::before { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 120% at 100% 0%, color-mix(in srgb, var(--accent) 45%, transparent) 0%, transparent 70%); pointer-events: none; }
 .cierre > * { position: relative; }
-.cierre h3 { color: var(--paper); font-size: 22px; font-weight: var(--weight-regular); letter-spacing: -0.02em; line-height: 1.15; }
+.cierre h3 { color: var(--paper); font-size: 22px; font-weight: var(--weight-semibold); letter-spacing: -0.02em; line-height: 1.15; }
 .cierre p { color: var(--gray-200); font-size: var(--t-md); }
 .cierre__nota { font-size: 12px !important; color: var(--gray-400) !important; }
 .acciones { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -304,9 +304,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .trama i.activa.auditada { transform: translateY(-1px) scale(2.4); }
   .trama .muestra { left: -5px; top: -6px; bottom: -6px; width: calc(3 / 19 * 100% + 16px); }
   .cobertura { left: -5px; top: -6px; bottom: -6px; }
-  .muestra__rotulo, .cobertura__rotulo { font-size: 11px; }
-  .muestra__rotulo { bottom: -22px; }
-  .cobertura__rotulo { top: -24px; }
+  .muestra__rotulo, .cobertura__rotulo { display: none; }
+  .lienzo { padding-bottom: 6px; }
   .modo-ahorro .trama i.irregular { animation-name: latir-m; }
   @keyframes latir-m { 0%, 100% { transform: scale(.75); } 50% { transform: scale(1.4); } }
   .tip { position: static; width: auto; max-width: none; margin-top: 12px; transition: none; }
@@ -315,7 +314,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .cap { height: 38px; font-size: 13px; padding: 0 12px 0 10px; }
   .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 58svh; border-radius: 18px 18px 0 0; animation: subir 320ms cubic-bezier(.2,.7,.2,1); }
   .escena.abierto .titular { display: none; }
-  .escena.abierto .lienzo { justify-content: flex-start; padding-top: 8px; }
+  .escena.abierto .lienzo { justify-content: flex-start; padding-top: 16px; }
   @keyframes subir { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
   .panel__asa { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--gray-200); margin: 10px auto 0; }
   .panel__cab { padding: 8px 12px 10px 20px; }
