@@ -190,18 +190,18 @@
     if (reducido) { terminarIntro(); return; }
     escena.classList.add("intro");
     var t = function (ms, fn) { introTimers.push(window.setTimeout(fn, ms)); };
-    t(80,   function () { ver(".h1a"); });
-    t(380,  function () { ver(".h1b"); });
-    t(720,  function () { ver(".titular__linea"); });
+    t(120,  function () { ver(".h1a"); });
+    t(520,  function () { ver(".h1b"); });
+    t(960,  function () { ver(".titular__linea"); });
     var cifras = document.querySelectorAll(".cifra");
-    t(1000, function () { ver(".cifras"); ver([cifras[0]]); }); t(1150, function () { ver([cifras[1]]); }); t(1300, function () { ver([cifras[2]]); });
-    t(1500, function () { ver(".lienzo"); });
-    t(1900, function () { el.classList.add("trama--lista"); });
-    t(2700, function () { barrer(function () {
+    t(1320, function () { ver(".cifras"); ver([cifras[0]]); }); t(1520, function () { ver([cifras[1]]); }); t(1720, function () { ver([cifras[2]]); });
+    t(2000, function () { ver(".lienzo"); });
+    t(2500, function () { el.classList.add("trama--lista"); });
+    t(3500, function () { barrer(function () {
       escena.classList.remove("intro");
       var caps = document.querySelectorAll(".cap");
-      for (var i = 0; i < caps.length; i++) (function (c, i) { introTimers.push(window.setTimeout(function () { ver([c]); }, i * 90)); })(caps[i], i);
-      introTimers.push(window.setTimeout(function () { ver(".pie"); introLista = true; arrancarRecorrido(); }, 520));
+      for (var i = 0; i < caps.length; i++) (function (c, i) { introTimers.push(window.setTimeout(function () { ver([c]); }, i * 120)); })(caps[i], i);
+      introTimers.push(window.setTimeout(function () { ver(".pie"); introLista = true; arrancarRecorrido(); }, 700));
     }); });
   }
   ["mousemove", "pointerdown", "keydown", "touchstart", "wheel"].forEach(function (ev) { window.addEventListener(ev, function () { if (!introLista) terminarIntro(); }, { passive: true, once: true }); });
@@ -226,7 +226,7 @@
     // El marcado sigue al borde REAL del velo (posición leída en cada frame), así van siempre sincronizados.
     quitarCobertura();
     escena.classList.add("cubierto");
-    var dur = reducido ? 0 : 2800;
+    var dur = reducido ? 0 : 3300;
     centros = null; medir();
     cobertura.style.transition = "none"; cobertura.style.width = "0%";
     void cobertura.offsetWidth; // fuerza el reflow: el ancho 0 queda aplicado antes de animar

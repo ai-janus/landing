@@ -131,9 +131,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .trama i.activa.irregular { transform: translateY(-1px) scale(3.4); }
 .trama i.activa.correcta { background: var(--gray-400); transform: translateY(-1px) scale(3.1); }
 .trama i.activa.auditada { background: var(--ink); transform: translateY(-1px) scale(3.1); }
-.trama .muestra { position: absolute; left: -8px; top: -10px; bottom: -10px; width: calc(5 / 55 * 100% + 21px); border: 1.5px solid var(--accent); border-radius: 6px; background: color-mix(in srgb, var(--accent) 8%, transparent); transform: scaleX(0); transform-origin: left center; transition: transform 700ms cubic-bezier(.2,.7,.2,1), background-color 400ms ease; pointer-events: none; }
+.trama .muestra { position: absolute; left: -8px; top: -10px; bottom: -10px; width: calc(5 / 55 * 100% + 21px); border: 1.5px solid var(--accent); border-radius: 6px; background: color-mix(in srgb, var(--accent) 8%, transparent); transform: scaleX(0); transform-origin: left center; transition: transform 900ms cubic-bezier(.2,.7,.2,1), background-color 400ms ease; pointer-events: none; }
 .trama--lista .muestra { transform: scaleX(1); }
-.muestra__rotulo { position: absolute; left: 0; bottom: -24px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
+.muestra__rotulo { position: absolute; left: 0; bottom: -24px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 500ms ease; }
 .cobertura { position: absolute; left: -8px; top: -10px; bottom: -10px; width: 0%; border-radius: 6px; background: color-mix(in srgb, var(--accent) 7%, transparent); pointer-events: none; opacity: 0; }
 .cobertura::after { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; width: 2px; background: var(--accent); box-shadow: -14px 0 24px color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 2px; transition: opacity 400ms ease; }
 .cobertura--lista::after { opacity: 0; }
@@ -326,7 +326,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 
 /* ---------- coreografía de entrada (solo con JS; sin JS todo visible) ---------- */
-html.js .entra { opacity: 0; transform: translateY(10px); transition: opacity 620ms ease, transform 620ms cubic-bezier(.2,.7,.2,1); }
+html.js .entra { opacity: 0; transform: translateY(12px); transition: opacity 820ms ease, transform 820ms cubic-bezier(.2,.7,.2,1); }
 html.js .entra.visto { opacity: 1; transform: none; }
 html.js .lienzo.entra { transform: none; }
 .escena.intro .muestra__rotulo { opacity: 1; }
