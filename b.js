@@ -184,12 +184,13 @@
     tip.classList.toggle("tip--irregular", p.classList.contains("irregular"));
     dibujarDist(p.getAttribute("data-dist"));
     tip.hidden = false;
-    if (movil || window.getComputedStyle(tip).position !== "absolute") { tip.style.left = ""; tip.style.top = ""; return; }
+    if (window.getComputedStyle(tip).position !== "absolute") { tip.style.left = ""; tip.style.top = ""; return; }
     var w = tip.offsetWidth, h = tip.offsetHeight, tw = el.clientWidth;
     var cx = el.offsetLeft + p.offsetLeft + p.offsetWidth / 2, cy = el.offsetTop + p.offsetTop + p.offsetHeight / 2;
     var left = Math.max(0, Math.min(cx - 16, tw - w));
-    // arriba si entra arriba; si no, abajo solo si entra dentro del lienzo; si no entra en ningún lado, arriba pegado al borde
-    var cabeArriba = cy - h - 14 >= el.offsetTop - 6, cabeAbajo = cy + 14 + h <= el.offsetTop + el.offsetHeight + 8;
+    // sale del punto: arriba si entra arriba, si no abajo; el margen inferior admite el aire bajo la grilla
+    var margen = movil ? 120 : 8;
+    var cabeArriba = cy - h - 14 >= el.offsetTop - 6, cabeAbajo = cy + 14 + h <= el.offsetTop + el.offsetHeight + margen;
     var arriba = cabeArriba || !cabeAbajo;
     tip.classList.toggle("tip--abajo", !arriba);
     var top = arriba ? Math.max(el.offsetTop - 6, cy - h - 14) : cy + 14;
@@ -236,22 +237,7 @@
   // Entrada coreografiada: guía el orden de lectura (título → subtítulo → cifras → grilla → franja
   // auditada → barrida de cobertura → capítulos → recorrido). Cualquier interacción la completa al instante.
   var arrancado = false, introLista = false, introTimers = [];
-  function arrancarRecorrido() {
-    if (arrancado) return; arrancado = true;
-    if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago");
-    // Un segundo después, un desplazamiento mínimo (~1 cm) para que el detalle del caso quede completo
-    // en pantalla. Solo si la página tiene scroll y el usuario no se movió por su cuenta.
-    if (reducido) return;
-    var y0 = window.scrollY, movido = false;
-    var vigilar = function () { if (Math.abs(window.scrollY - y0) > 4) movido = true; };
-    window.addEventListener("scroll", vigilar, { passive: true });
-    window.setTimeout(function () {
-      window.removeEventListener("scroll", vigilar);
-      var hay = document.documentElement.scrollHeight - window.innerHeight;
-      if (movido || window.scrollY > 4 || hay < 24) return;
-      window.scrollTo({ top: Math.min(40, hay), behavior: "smooth" });
-    }, 1000);
-  }
+  function arrancarRecorrido() { if (arrancado) return; arrancado = true; if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago"); }
   var entra = Array.prototype.slice.call(document.querySelectorAll(".entra"));
   function ver(sel) { var els = typeof sel === "string" ? document.querySelectorAll(sel) : sel; for (var i = 0; i < els.length; i++) els[i].classList.add("visto"); }
   function terminarIntro() {

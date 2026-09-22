@@ -296,6 +296,7 @@ a.perfil__n:hover { color: var(--accent); }
   .cifra__n { font-size: 20px; }
   .cifra__t { font-size: 11px; }
   .lienzo { padding: 12px 0 6px; }
+  .trama-wrap { margin-bottom: 8px; }
   .trama { grid-template-columns: repeat(20, 6px); --fila: 13px; }
   .trama i { width: 6px; height: 6px; }
   .trama i.correcta { transform: scale(.6); background: color-mix(in srgb, var(--gray-200) 80%, var(--paper)); }
@@ -309,13 +310,11 @@ a.perfil__n:hover { color: var(--accent); }
   .lienzo { padding-bottom: 6px; }
   .modo-ahorro .trama i.irregular { animation-name: latir-m; }
   @keyframes latir-m { 0%, 100% { transform: scale(.75); } 50% { transform: scale(1.4); } }
-  /* En celular el tooltip vive debajo de la grilla: reserva su espacio desde el inicio y aparece con
-     un fundido, para que nunca empuje a las píldoras. */
-  .tip { position: static; width: auto; max-width: none; margin-top: 12px; min-height: 176px; opacity: 1; transform: none; transition: opacity 420ms ease; }
-  .tip[hidden] { display: flex; opacity: 0; pointer-events: none; }
-  .tip::after { display: none; }
-  .escena.abierto .tip { min-height: 0; }
-  .escena.abierto .tip[hidden] { display: none; }
+  /* El tooltip sale del punto también en celular (las píldoras son fijas, nada las empuja) */
+  .tip { max-width: calc(100vw - 32px); padding: 9px 11px; transition: left 520ms cubic-bezier(.2,.7,.2,1), top 520ms cubic-bezier(.2,.7,.2,1); }
+  .tip__titulo { font-size: 13px; }
+  .tip__t { font-size: 12px; }
+  .tip__dist svg { width: 100%; }
   /* Píldoras flotantes fijas abajo, en tinta: barra de navegación siempre a mano */
   .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
     gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
