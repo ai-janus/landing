@@ -245,7 +245,7 @@
     ver(entra); el.classList.add("trama--lista"); escena.classList.remove("intro");
     // el recorrido arranca sí o sí (aunque un capítulo abierto cancele la barrida de entrada)
     if (!escena.classList.contains("cubierto")) barrer();
-    window.setTimeout(arrancarRecorrido, 600);
+    window.setTimeout(arrancarRecorrido, 1600);
   }
   function intro() {
     if (reducido) { terminarIntro(); return; }
@@ -262,7 +262,8 @@
       escena.classList.remove("intro");
       var caps = document.querySelectorAll(".cap");
       for (var i = 0; i < caps.length; i++) (function (c, i) { introTimers.push(window.setTimeout(function () { ver([c]); }, i * 120)); })(caps[i], i);
-      introTimers.push(window.setTimeout(function () { ver(".pie"); introLista = true; arrancarRecorrido(); }, 700));
+      introTimers.push(window.setTimeout(function () { ver(".pie"); introLista = true; }, 700));
+      introTimers.push(window.setTimeout(arrancarRecorrido, 1700)); // un segundo extra: las píldoras terminan de asentarse antes del primer caso
     }); });
   }
   ["mousemove", "pointerdown", "keydown", "touchstart", "wheel"].forEach(function (ev) { window.addEventListener(ev, function () { if (!introLista) terminarIntro(); }, { passive: true, once: true }); });

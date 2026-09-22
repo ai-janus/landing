@@ -309,8 +309,13 @@ a.perfil__n:hover { color: var(--accent); }
   .lienzo { padding-bottom: 6px; }
   .modo-ahorro .trama i.irregular { animation-name: latir-m; }
   @keyframes latir-m { 0%, 100% { transform: scale(.75); } 50% { transform: scale(1.4); } }
-  .tip { position: static; width: auto; max-width: none; margin-top: 12px; transition: none; }
+  /* En celular el tooltip vive debajo de la grilla: reserva su espacio desde el inicio y aparece con
+     un fundido, para que nunca empuje a las píldoras. */
+  .tip { position: static; width: auto; max-width: none; margin-top: 12px; min-height: 176px; opacity: 1; transform: none; transition: opacity 420ms ease; }
+  .tip[hidden] { display: flex; opacity: 0; pointer-events: none; }
   .tip::after { display: none; }
+  .escena.abierto .tip { min-height: 0; }
+  .escena.abierto .tip[hidden] { display: none; }
   .capitulos { justify-content: flex-start; padding: 12px 0 8px; }
   .cap { height: 38px; font-size: 13px; padding: 0 12px 0 10px; }
   .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 62svh; border-radius: 18px 18px 0 0; animation: subir 620ms cubic-bezier(.2,.7,.2,1); transition: max-height 520ms cubic-bezier(.2,.7,.2,1); }
