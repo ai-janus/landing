@@ -236,7 +236,22 @@
   // Entrada coreografiada: guía el orden de lectura (título → subtítulo → cifras → grilla → franja
   // auditada → barrida de cobertura → capítulos → recorrido). Cualquier interacción la completa al instante.
   var arrancado = false, introLista = false, introTimers = [];
-  function arrancarRecorrido() { if (arrancado) return; arrancado = true; if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago"); }
+  function arrancarRecorrido() {
+    if (arrancado) return; arrancado = true;
+    if (!reducido) siguiente(); else if (rojas[0]) mostrar(rojas[0], "Detectada antes del pago");
+    // Un segundo después, un desplazamiento mínimo (~1 cm) para que el detalle del caso quede completo
+    // en pantalla. Solo si la página tiene scroll y el usuario no se movió por su cuenta.
+    if (reducido) return;
+    var y0 = window.scrollY, movido = false;
+    var vigilar = function () { if (Math.abs(window.scrollY - y0) > 4) movido = true; };
+    window.addEventListener("scroll", vigilar, { passive: true });
+    window.setTimeout(function () {
+      window.removeEventListener("scroll", vigilar);
+      var hay = document.documentElement.scrollHeight - window.innerHeight;
+      if (movido || window.scrollY > 4 || hay < 24) return;
+      window.scrollTo({ top: Math.min(40, hay), behavior: "smooth" });
+    }, 1000);
+  }
   var entra = Array.prototype.slice.call(document.querySelectorAll(".entra"));
   function ver(sel) { var els = typeof sel === "string" ? document.querySelectorAll(sel) : sel; for (var i = 0; i < els.length; i++) els[i].classList.add("visto"); }
   function terminarIntro() {
