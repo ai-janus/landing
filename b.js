@@ -362,14 +362,32 @@
     var barra = document.getElementById("capitulos");
     if (!barra || !window.matchMedia("(max-width: 639px)").matches) return;
     if (barra.parentNode !== document.body) document.body.appendChild(barra);
-    var x0 = null, s0 = 0, movido = false;
-    barra.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; s0 = barra.scrollLeft; movido = false; }, { passive: true });
+    var x0 = null, s0 = 0, movido = false, vel = 0, xPrev = 0, tPrev = 0, inercia = null;
+    function frenar() { if (inercia) { window.cancelAnimationFrame(inercia); inercia = null; } }
+    barra.addEventListener("touchstart", function (e) {
+      frenar();
+      x0 = xPrev = e.touches[0].clientX; s0 = barra.scrollLeft; tPrev = Date.now(); vel = 0; movido = false;
+    }, { passive: true });
     barra.addEventListener("touchmove", function (e) {
       if (x0 === null) return;
-      var dx = e.touches[0].clientX - x0;
-      if (Math.abs(dx) > 4) { movido = true; e.preventDefault(); barra.scrollLeft = s0 - dx; }
+      var x = e.touches[0].clientX, dx = x - x0, ahora = Date.now(), dt = ahora - tPrev;
+      if (Math.abs(dx) > 4) {
+        movido = true; e.preventDefault();
+        barra.scrollLeft = s0 - dx;                       // sigue al dedo, sin suavizado
+        if (dt > 0) vel = 0.7 * vel + 0.3 * ((xPrev - x) / dt * 16); // px por frame, suavizada
+        xPrev = x; tPrev = ahora;
+      }
     }, { passive: false });
-    barra.addEventListener("touchend", function () { x0 = null; }, { passive: true });
+    barra.addEventListener("touchend", function () {
+      x0 = null;
+      if (Math.abs(vel) < 0.6) return;
+      (function deslizar() {                              // inercia con fricción, como un carrusel nativo
+        barra.scrollLeft += vel; vel *= 0.94;
+        var tope = barra.scrollWidth - barra.clientWidth;
+        if (barra.scrollLeft <= 0 || barra.scrollLeft >= tope || Math.abs(vel) < 0.3) { inercia = null; return; }
+        inercia = window.requestAnimationFrame(deslizar);
+      })();
+    }, { passive: true });
     barra.addEventListener("click", function (e) { if (movido) { e.preventDefault(); e.stopPropagation(); movido = false; } }, true);
   })();
   document.getElementById("panel-cerrar").addEventListener("click", cerrar);

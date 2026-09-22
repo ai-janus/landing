@@ -319,7 +319,9 @@ a.perfil__n:hover { color: var(--accent); }
   /* Píldoras flotantes fijas abajo, en tinta: barra de navegación siempre a mano */
   .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
     gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
-    overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; will-change: scroll-position; transition: opacity 460ms ease, transform 560ms cubic-bezier(.2,.7,.2,1); }
+    overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; will-change: scroll-position;
+    scroll-behavior: auto; /* el arrastre sigue al dedo 1:1; el suavizado global lo volvía espeso */
+    transition: opacity 460ms ease, transform 560ms cubic-bezier(.2,.7,.2,1); }
   .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 50px; z-index: -1;
     background: linear-gradient(to top, var(--paper) 48%, color-mix(in srgb, var(--paper) 72%, transparent) 80%, transparent 100%); pointer-events: none; }
   .cap { height: 40px; font-size: 13px; padding: 0 14px 0 12px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
