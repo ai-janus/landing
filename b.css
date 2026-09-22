@@ -313,17 +313,22 @@ a.perfil__n:hover { color: var(--accent); }
   .tip::after { display: none; }
   .capitulos { justify-content: flex-start; padding: 12px 0 8px; }
   .cap { height: 38px; font-size: 13px; padding: 0 12px 0 10px; }
-  .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 46svh; border-radius: 18px 18px 0 0; animation: subir 320ms cubic-bezier(.2,.7,.2,1); transition: max-height 260ms cubic-bezier(.2,.7,.2,1); }
+  .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 62svh; border-radius: 18px 18px 0 0; animation: subir 360ms cubic-bezier(.2,.7,.2,1); transition: max-height 300ms cubic-bezier(.2,.7,.2,1); }
   .panel.plegado { max-height: 64px; }
   .panel.plegado .panel__cuerpo, .panel.plegado .panel__nav { visibility: hidden; }
   .panel__cab { cursor: grab; }
   .escena.abierto .lienzo { padding-bottom: 0; }
-  .escena.abierto .tip { position: relative; z-index: 45; }
   .trama { touch-action: pan-y; }
   .trama--js { touch-action: none; }
-  .escena.abierto .titular { display: none; }
-  .escena.abierto .lienzo { justify-content: flex-start; padding-top: 10px; }
-  .escena.abierto .capitulos, .escena.abierto .pie { visibility: hidden; }
+
+  /* Al abrir un capítulo: el titular y las cifras se repliegan con transición; la grilla sube y se
+     achica para dejarle lugar al panel. El tooltip puede quedar tapado: la grilla es animación y juego. */
+  .titular, .capitulos, .pie { transition: opacity 280ms ease, transform 320ms cubic-bezier(.2,.7,.2,1), max-height 360ms cubic-bezier(.2,.7,.2,1), margin 320ms ease, padding 320ms ease; overflow: hidden; max-height: 60svh; }
+  .escena.abierto .titular, .escena.abierto .capitulos, .escena.abierto .pie { opacity: 0; transform: translateY(-14px); max-height: 0; margin: 0; padding: 0; pointer-events: none; }
+  .lienzo { transition: transform 360ms cubic-bezier(.2,.7,.2,1), padding 320ms ease; }
+  .escena.abierto .lienzo { justify-content: flex-start; padding-top: 8px; }
+  .escena.abierto .trama { --fila: 11px; }
+  .escena.abierto .tip { opacity: .55; transition: opacity 280ms ease; }
   @keyframes subir { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
   .panel__asa { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--gray-200); margin: 10px auto 0; }
   .panel__cab { padding: 8px 12px 10px 20px; }
