@@ -1,4 +1,4 @@
-/* Janus · landing B: la grilla es el centro; los capítulos cambian lo que hace la grilla. */
+/* Limine · landing B: la grilla es el centro; los capítulos cambian lo que hace la grilla. */
 (function () {
   "use strict";
   document.documentElement.classList.add("js");
@@ -222,7 +222,7 @@
     cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista"); void cobertura.offsetWidth;
   }
   function barrer(alTerminar) {
-    // la cobertura de Janus barre la grilla de izquierda a derecha: cada fraude que pasa queda detectado.
+    // la cobertura de Limine barre la grilla de izquierda a derecha: cada fraude que pasa queda detectado.
     // El marcado sigue al borde REAL del velo (posición leída en cada frame), así van siempre sincronizados.
     quitarCobertura();
     escena.classList.add("cubierto");
@@ -250,7 +250,7 @@
     escena.classList.add("modo-" + capitulo);
     if (capitulo === "ahorro") { quitarCobertura(); }                       // el problema crudo: sin cobertura, los rojos laten
     if (capitulo === "producto") { barrer(); }                               // vuelve a barrer
-    if (capitulo === "janus" || capitulo === "implementacion") { if (!escena.classList.contains("cubierto")) barrer(); }
+    if (capitulo === "limine" || capitulo === "implementacion") { if (!escena.classList.contains("cubierto")) barrer(); }
     if (capitulo === "auditores") { // un caso en la mitad izquierda, lejos del panel
       if (!escena.classList.contains("cubierto")) barrer();
       var cand = null;

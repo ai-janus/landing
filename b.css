@@ -1,6 +1,6 @@
 /* ============================================================
-   JANUS · landing B (versión reducida): una pantalla, la grilla al centro,
-   capítulos conceptuales descubribles. Tokens copiados de janus.css.
+   LIMINE · landing B (versión reducida): una pantalla, la grilla al centro,
+   capítulos conceptuales descubribles. Tokens copiados de limine.css.
    Escala tipográfica: referencia arcos.eu (titular grande en peso regular,
    cuerpo 15 px, etiquetas en frase normal).
    ============================================================ */
@@ -139,14 +139,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cobertura--lista::after { opacity: 0; }
 .cobertura__rotulo { position: absolute; left: 0; bottom: -44px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
 .cobertura--lista .cobertura__rotulo { opacity: 1; }
-.cubierto:not(.modo-janus) .muestra__rotulo { opacity: 0; }
+.cubierto:not(.modo-limine) .muestra__rotulo { opacity: 0; }
 .modo-ahorro .cobertura { opacity: 0 !important; }
 .trama:not(.trama--js) { height: 380px; background-image: radial-gradient(circle, var(--gray-200) 2px, transparent 2px); background-size: 22px 22px; }
 .trama:not(.trama--js) .muestra { transform: none; }
 @media (prefers-reduced-motion: reduce) { .trama i, .trama .muestra { transition: none; } }
 
 /* modos de la grilla, uno por capítulo */
-.modo-janus .muestra__rotulo { opacity: 1; }
+.modo-limine .muestra__rotulo { opacity: 1; }
 .modo-ahorro .trama i.correcta, .modo-ahorro .trama i.auditada { opacity: .35; }
 .modo-ahorro .trama i.irregular { animation: latir 1.6s ease-in-out infinite; }
 @keyframes latir { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.7); } }
@@ -202,6 +202,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .perfiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .perfil { display: flex; flex-direction: column; gap: 2px; }
 .perfil__n { font-size: var(--t-md); font-weight: var(--weight-medium); }
+a.perfil__n:hover { color: var(--accent); }
 .perfil__r { font-size: var(--t-sm); color: var(--accent); }
 .perfil__d { font-size: var(--t-sm); color: var(--text-secondary); line-height: 1.4; margin-top: 2px; }
 .logos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px; align-items: center; padding-top: 8px; }

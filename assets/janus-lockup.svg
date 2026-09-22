@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 60" fill="currentColor" role="img" aria-label="Janus">
-  <g>
-    <polygon points="6,6 26,6 26,46 17,46"></polygon>
-    <polygon points="52,6 32,6 32,46 41,46"></polygon>
-  </g>
-  <text x="62" y="45" font-family="Archivo, Helvetica, Arial, sans-serif" font-weight="800" font-size="46" letter-spacing="0.5">Janus</text>
-</svg>
