@@ -122,7 +122,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @media (max-width: 1023px) { .info__texto { left: auto; right: -8px; } }
 
 /* lienzo: la grilla */
-.lienzo { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 16px 0 42px; min-height: 0; }
+.lienzo { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: center; padding: 16px 0 42px; min-height: 0; }
 .trama { position: relative; display: grid; justify-content: space-between; grid-template-columns: repeat(56, 5px); row-gap: var(--fila, 16px); width: 100%; }
 .trama i { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--gray-200); cursor: crosshair; transition: transform 260ms cubic-bezier(.15,.8,.25,1), background-color 200ms ease, opacity 300ms ease, box-shadow 200ms ease; will-change: transform; }
 .trama i.irregular { background: var(--fraude); }
@@ -272,7 +272,7 @@ a.perfil__n:hover { color: var(--accent); }
 .panel__pos { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--gray-400); }
 
 /* pie */
-.pie { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0 16px; font-size: 12px; color: var(--text-secondary); }
+.pie { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 8px 0 16px; font-size: 12px; color: var(--text-secondary); }
 .pie__pista { color: var(--gray-400); }
 @media (max-width: 639px) { .pie__pista { display: none; } }
 
@@ -320,7 +320,7 @@ a.perfil__n:hover { color: var(--accent); }
   .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
     gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
     -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%); }
-  .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 66px; z-index: -1;
+  .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 50px; z-index: -1;
     background: linear-gradient(to top, var(--paper) 48%, color-mix(in srgb, var(--paper) 72%, transparent) 80%, transparent 100%); pointer-events: none; }
   .cap { height: 40px; font-size: 13px; padding: 0 14px 0 12px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .cap .n { color: var(--gray-400); }
@@ -328,7 +328,7 @@ a.perfil__n:hover { color: var(--accent); }
   .cap.activa .n { color: var(--gray-200); }
   /* el contenido deja lugar a la barra flotante */
   .escena { padding-bottom: 104px; }
-  .pie { padding: 6px 0 10px; position: relative; z-index: 31; }
+  .pie { padding: 6px 0 10px; }
   .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 62svh; border-radius: 18px 18px 0 0; animation: subir 620ms cubic-bezier(.2,.7,.2,1); transition: max-height 520ms cubic-bezier(.2,.7,.2,1); }
   .panel.plegado { max-height: 64px; }
   .panel.plegado .panel__cuerpo, .panel.plegado .panel__nav { visibility: hidden; }
