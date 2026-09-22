@@ -39,14 +39,14 @@
     var nombre = m[0], esp = m[1], inc = m[2];
     if (r < 0.20) { // R6 · cantidades sobre la norma
       var x = 2.8 + azar(d + 3) * 1.1, n = Math.round(esp * x);
-      return [nombre, n + " descartables facturados; " + esp + " esperados en casos comparables de su cartera (" + x.toFixed(1).replace(".", ",") + " veces la norma)."];
+      return [nombre, n + " descartables facturados; " + esp + " esperados en casos comparables de su cartera (" + x.toFixed(1).replace(".", ",") + " veces la norma).", { mediana: esp, caso: n, sigma: esp * 0.22, unidad: "descartables por cirugía", n: 180 + Math.floor(azar(d + 71) * 220), seed: d }];
     }
     if (r < 0.36) { // R4 · doble cobro del módulo
       return [nombre, "Descartables facturados aparte del módulo, que por convenio ya incluye " + inc + "."];
     }
     if (r < 0.50) { // R3 · precio sobre referencia (medicamento)
       var sob = 1.16 + azar(d + 5) * 0.14;
-      return [med[0], "Facturado a " + ars(med[1] * sob) + " cuando el valor de referencia vigente es " + ars(med[1]) + " (" + pct(sob - 1) + " por encima)."];
+      return [med[0], "Facturado a " + ars(med[1] * sob) + " cuando el valor de referencia vigente es " + ars(med[1]) + " (" + pct(sob - 1) + " por encima).", { mediana: 1, caso: sob, sigma: 0.05, unidad: "precio sobre la referencia", n: 60 + Math.floor(azar(d + 73) * 140), seed: d, fmt: "x" }];
     }
     if (r < 0.58) { // R3 · precio sobre referencia (descartables)
       return [nombre, "Set de descartables un " + pct(0.16 + azar(d + 9) * 0.16) + " por encima del valor de referencia del convenio."];
@@ -61,7 +61,8 @@
       return ["Sesión de kinesiología", "Sesión " + (11 + Math.floor(azar(d + 19) * 3)) + " de una serie con tope de 10 por autorización, según Anexo III del convenio."];
     }
     if (r < 0.86) { // R2 · agenda imposible
-      return ["Consulta en consultorio", "El mismo prestador facturó " + (48 + Math.floor(azar(d + 23) * 10)) + " consultas en un solo día hábil."];
+      var cons = 48 + Math.floor(azar(d + 23) * 10);
+      return ["Consulta en consultorio", "El mismo prestador facturó " + cons + " consultas en un solo día hábil.", { mediana: 14, caso: cons, sigma: 4, unidad: "consultas por día, prestadores comparables", n: 90 + Math.floor(azar(d + 77) * 60), seed: d }];
     }
     if (r < 0.91) { // pensión sobre el alta: solo módulos con internación
       var INTERNAN = [0, 1, 2, 3, 6, 8, 10, 11], mi = MODULOS[INTERNAN[Math.floor(azar(d + 37) * INTERNAN.length)]];
@@ -73,7 +74,8 @@
     if (r < 0.98) { // autorización
       return [nombre, "Sin autorización vigente, que el convenio exige para esta práctica."];
     }
-    return ["Laboratorio", "Panel de " + (22 + Math.floor(azar(d + 31) * 12)) + " determinaciones para un control de rutina; la norma de la cartera es 8."];
+    var det = 22 + Math.floor(azar(d + 31) * 12);
+    return ["Laboratorio", "Panel de " + det + " determinaciones para un control de rutina; la norma de la cartera es 8.", { mediana: 8, caso: det, sigma: 2.2, unidad: "determinaciones por panel de rutina", n: 300 + Math.floor(azar(d + 79) * 400), seed: d }];
   }
   function ejemploCorrecto(d) {
     var r = azar(d + 41), m = MODULOS[Math.floor(azar(d + 7) * MODULOS.length)], med = MEDS[Math.floor(azar(d + 11) * MEDS.length)];
@@ -114,7 +116,9 @@
       if (col < muestraCols) { i.className = "auditada"; ej = ejemploAuditado(d); i.setAttribute("data-k", "Auditada"); }
       else if (r < 0.09) { i.className = "irregular"; ej = ejemploIrregular(d); i.setAttribute("data-k", "Nadie la revisó · fraude o desperdicio"); }
       else { i.className = "correcta"; ej = ejemploCorrecto(d); i.setAttribute("data-k", "Nadie la revisó"); }
-      i.setAttribute("data-titulo", ej[0]); i.setAttribute("data-t", ej[1]); frag.appendChild(i);
+      i.setAttribute("data-titulo", ej[0]); i.setAttribute("data-t", ej[1]);
+      if (ej[2]) i.setAttribute("data-dist", JSON.stringify(ej[2]));
+      frag.appendChild(i);
     }
     el.appendChild(frag);
     puntos = el.querySelectorAll("i"); auditadas = []; rojas = []; centros = null;
@@ -136,11 +140,50 @@
       if (d < ALCANCE) { var f = 1 - d / ALCANCE; f = f * f * (3 - 2 * f); puntos[k].style.transform = "translate(" + (dx / d * f * 11).toFixed(1) + "px," + (dy / d * f * 11 - f * 1.5).toFixed(1) + "px) scale(" + (1 + f * 1.1).toFixed(2) + ")"; vecinos.push(puntos[k]); }
     }
   }
+  // Histograma de la distribución de la cartera (gris), mediana marcada y el caso en rojo.
+  var td = document.getElementById("tip-dist");
+  function dibujarDist(json) {
+    if (!td) return;
+    if (!json) { td.hidden = true; td.innerHTML = ""; return; }
+    var D = JSON.parse(json), W = 296, H = 72, PAD = 4, B = 28;
+    var hi = Math.max(D.caso * 1.12, D.mediana + 4.5 * D.sigma), lo = Math.max(0, D.mediana - 3.2 * D.sigma), paso = (hi - lo) / B;
+    var barras = [], max = 0;
+    for (var b = 0; b < B; b++) { // campana con cola derecha suave y un poco de ruido determinístico
+      var x = lo + (b + 0.5) * paso, z = (x - D.mediana) / D.sigma;
+      var v = Math.exp(-0.5 * z * z) + (z > 0 ? 0.06 * Math.exp(-0.35 * z) : 0);
+      v *= 0.82 + 0.36 * azar(D.seed * 31 + b);
+      barras.push(v); if (v > max) max = v;
+    }
+    var xs = function (val) { return PAD + (val - lo) / (hi - lo) * (W - 2 * PAD); };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + (H + 18) + '" width="' + W + '" height="' + (H + 18) + '" aria-hidden="true">';
+    for (var k = 0; k < B; k++) { var h = Math.max(1.5, barras[k] / max * (H - 8)); svg += '<rect x="' + (PAD + k * (W - 2 * PAD) / B + 0.6).toFixed(1) + '" y="' + (H - h).toFixed(1) + '" width="' + ((W - 2 * PAD) / B - 1.2).toFixed(1) + '" height="' + h.toFixed(1) + '" class="d-b"/>'; }
+    var xm = xs(D.mediana), xc = Math.min(W - PAD, xs(D.caso));
+    svg += '<line x1="' + xm.toFixed(1) + '" y1="4" x2="' + xm.toFixed(1) + '" y2="' + H + '" class="d-m"/>';
+    svg += '<line x1="' + xc.toFixed(1) + '" y1="4" x2="' + xc.toFixed(1) + '" y2="' + H + '" class="d-cl"/><circle cx="' + xc.toFixed(1) + '" cy="' + H + '" r="4.5" class="d-c"/>';
+    var f = function (v) { return D.fmt === "x" ? (v === 1 ? "referencia" : "+" + Math.round((v - 1) * 100) + "%") : Math.round(v); };
+    var tm = "mediana " + f(D.mediana), tc = "este caso " + f(D.caso);
+    // las etiquetas se anclan hacia afuera de su marca; si igual se pisan, la del caso baja un renglón
+    var anchoM = tm.length * 6.2, anchoC = tc.length * 6.2, anclaM = "end", anclaC = "start";
+    var xM = xm - 4, xC = xc + 4;
+    if (xM - anchoM < 0) { anclaM = "start"; xM = xm + 4; }
+    if (xC + anchoC > W) { anclaC = "end"; xC = xc - 4; }
+    var mL = anclaM === "end" ? xM - anchoM : xM, mR = anclaM === "end" ? xM : xM + anchoM;
+    var cL = anclaC === "end" ? xC - anchoC : xC, cR = anclaC === "end" ? xC : xC + anchoC;
+    var yC = (cL < mR && cR > mL) ? H + 26 : H + 14, HT = (yC > H + 14) ? H + 30 : H + 18;
+    svg = svg.replace('viewBox="0 0 ' + W + ' ' + (H + 18) + '" width="' + W + '" height="' + (H + 18) + '"', 'viewBox="0 0 ' + W + ' ' + HT + '" width="' + W + '" height="' + HT + '"');
+    svg += '<text x="' + xM.toFixed(1) + '" y="' + (H + 14) + '" text-anchor="' + anclaM + '" class="d-tm">' + tm + '</text>';
+    svg += '<text x="' + xC.toFixed(1) + '" y="' + yC + '" text-anchor="' + anclaC + '" class="d-tc">' + tc + '</text>';
+    svg += '</svg>';
+    td.innerHTML = svg + '<span class="d-pie">' + D.n + ' casos comparables de su cartera · ' + D.unidad + '</span>';
+    td.hidden = false;
+  }
   function mostrar(p, rotulo) {
     if (actual && actual !== p) actual.classList.remove("activa");
     actual = p; p.classList.add("activa"); relieve(p);
     tk.textContent = rotulo || p.getAttribute("data-k"); tti.textContent = p.getAttribute("data-titulo"); tt.textContent = p.getAttribute("data-t");
-    tip.classList.toggle("tip--irregular", p.classList.contains("irregular")); tip.hidden = false;
+    tip.classList.toggle("tip--irregular", p.classList.contains("irregular"));
+    dibujarDist(p.getAttribute("data-dist"));
+    tip.hidden = false;
     if (movil || window.getComputedStyle(tip).position !== "absolute") { tip.style.left = ""; tip.style.top = ""; return; }
     var w = tip.offsetWidth, h = tip.offsetHeight, tw = el.clientWidth;
     var cx = el.offsetLeft + p.offsetLeft + p.offsetWidth / 2, cy = el.offsetTop + p.offsetTop + p.offsetHeight / 2;
