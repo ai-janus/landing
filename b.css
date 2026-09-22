@@ -316,8 +316,19 @@ a.perfil__n:hover { color: var(--accent); }
   .tip::after { display: none; }
   .escena.abierto .tip { min-height: 0; }
   .escena.abierto .tip[hidden] { display: none; }
-  .capitulos { justify-content: flex-start; padding: 12px 0 8px; }
-  .cap { height: 38px; font-size: 13px; padding: 0 12px 0 10px; }
+  /* Píldoras flotantes fijas abajo, en tinta: barra de navegación siempre a mano */
+  .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
+    gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
+    -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%); }
+  .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 66px; z-index: -1;
+    background: linear-gradient(to top, var(--paper) 48%, color-mix(in srgb, var(--paper) 72%, transparent) 80%, transparent 100%); pointer-events: none; }
+  .cap { height: 40px; font-size: 13px; padding: 0 14px 0 12px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .cap .n { color: var(--gray-400); }
+  .cap.activa { background: var(--accent-dark); border-color: var(--accent-dark); }
+  .cap.activa .n { color: var(--gray-200); }
+  /* el contenido deja lugar a la barra flotante */
+  .escena { padding-bottom: 104px; }
+  .pie { padding: 6px 0 10px; position: relative; z-index: 31; }
   .panel { right: 0; left: 0; top: auto; bottom: 0; width: auto; max-height: 62svh; border-radius: 18px 18px 0 0; animation: subir 620ms cubic-bezier(.2,.7,.2,1); transition: max-height 520ms cubic-bezier(.2,.7,.2,1); }
   .panel.plegado { max-height: 64px; }
   .panel.plegado .panel__cuerpo, .panel.plegado .panel__nav { visibility: hidden; }
@@ -329,7 +340,9 @@ a.perfil__n:hover { color: var(--accent); }
   /* Al abrir un capítulo: el titular y las cifras se repliegan con transición; la grilla sube y se
      achica para dejarle lugar al panel. El tooltip puede quedar tapado: la grilla es animación y juego. */
   .titular, .capitulos, .pie { transition: opacity 460ms ease, transform 560ms cubic-bezier(.2,.7,.2,1), max-height 600ms cubic-bezier(.2,.7,.2,1), margin 560ms ease, padding 560ms ease; overflow: hidden; max-height: 60svh; }
-  .escena.abierto .titular, .escena.abierto .capitulos, .escena.abierto .pie { opacity: 0; transform: translateY(-14px); max-height: 0; margin: 0; padding: 0; pointer-events: none; }
+  .escena.abierto .titular, .escena.abierto .pie { opacity: 0; transform: translateY(-14px); max-height: 0; margin: 0; padding: 0; pointer-events: none; }
+  .escena.abierto .capitulos { opacity: 0; transform: translateY(20px); pointer-events: none; }
+  .escena.abierto .capitulos::before { opacity: 0; }
   .lienzo { transition: transform 600ms cubic-bezier(.2,.7,.2,1), padding 560ms ease; }
   .escena.abierto .lienzo { justify-content: flex-start; padding-top: 8px; }
   .escena.abierto .trama { --fila: 11px; }
