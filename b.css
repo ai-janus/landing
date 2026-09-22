@@ -319,7 +319,7 @@ a.perfil__n:hover { color: var(--accent); }
   /* Píldoras flotantes fijas abajo, en tinta: barra de navegación siempre a mano */
   .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
     gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
-    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; scroll-padding: 0 16px; }
+    overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; will-change: scroll-position; transition: opacity 460ms ease, transform 560ms cubic-bezier(.2,.7,.2,1); }
   .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 50px; z-index: -1;
     background: linear-gradient(to top, var(--paper) 48%, color-mix(in srgb, var(--paper) 72%, transparent) 80%, transparent 100%); pointer-events: none; }
   .cap { height: 40px; font-size: 13px; padding: 0 14px 0 12px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
@@ -341,8 +341,8 @@ a.perfil__n:hover { color: var(--accent); }
      achica para dejarle lugar al panel. El tooltip puede quedar tapado: la grilla es animación y juego. */
   .titular, .capitulos, .pie { transition: opacity 460ms ease, transform 560ms cubic-bezier(.2,.7,.2,1), max-height 600ms cubic-bezier(.2,.7,.2,1), margin 560ms ease, padding 560ms ease; overflow: hidden; max-height: 60svh; }
   .escena.abierto .titular, .escena.abierto .pie { opacity: 0; transform: translateY(-14px); max-height: 0; margin: 0; padding: 0; pointer-events: none; }
-  .escena.abierto .capitulos { opacity: 0; transform: translateY(20px); pointer-events: none; }
-  .escena.abierto .capitulos::before { opacity: 0; }
+  body.cap-abierto .capitulos { opacity: 0; transform: translateY(20px); pointer-events: none; }
+  body.cap-abierto .capitulos::before { opacity: 0; }
   .lienzo { transition: transform 600ms cubic-bezier(.2,.7,.2,1), padding 560ms ease; }
   .escena.abierto .lienzo { justify-content: flex-start; padding-top: 8px; }
   .escena.abierto .trama { --fila: 11px; }

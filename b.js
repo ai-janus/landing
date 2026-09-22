@@ -337,7 +337,7 @@
     capitulo = id;
     caps.forEach(function (c) { c.classList.toggle("activa", c.getAttribute("data-cap") === id); });
     for (var h = 0; h < hojas.length; h++) hojas[h].classList.toggle("activa", hojas[h].getAttribute("data-cap") === id);
-    panel.hidden = false; panel.classList.remove("plegado"); escena.classList.add("abierto");
+    panel.hidden = false; panel.classList.remove("plegado"); escena.classList.add("abierto"); document.body.classList.add("cap-abierto");
     var i = orden.indexOf(id), hoja = document.querySelector('.hoja[data-cap="' + id + '"]');
     document.getElementById("panel-ant").disabled = i <= 0; document.getElementById("panel-sig").disabled = i >= orden.length - 1;
     document.getElementById("panel-num").textContent = ("0" + (i + 1)) + " · " + (hoja ? hoja.getAttribute("data-nombre") : "");
@@ -353,8 +353,25 @@
     function fin(e) { if (y0 === null) return; var dy = e.changedTouches[0].clientY - y0; y0 = null; if (dy > 24) panel.classList.add("plegado"); else if (dy < -24) panel.classList.remove("plegado"); else panel.classList.toggle("plegado"); }
     [asa, cab].forEach(function (z) { if (!z) return; z.addEventListener("touchstart", inicio, { passive: true }); z.addEventListener("touchend", fin, { passive: true }); });
   })();
-  function cerrar() { capitulo = null; panel.hidden = true; panel.classList.remove("plegado"); escena.classList.remove("abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
+  function cerrar() { capitulo = null; panel.hidden = true; panel.classList.remove("plegado"); escena.classList.remove("abierto"); document.body.classList.remove("cap-abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
   caps.forEach(function (c) { c.addEventListener("click", function () { var id = c.getAttribute("data-cap"); if (capitulo === id) cerrar(); else abrir(id); }); });
+
+  // Barra de capítulos en celular: fuera del contenedor recortado (iOS no desplaza un fixed dentro de
+  // overflow:hidden) y con arrastre propio, para no depender del scroll nativo.
+  (function () {
+    var barra = document.getElementById("capitulos");
+    if (!barra || !window.matchMedia("(max-width: 639px)").matches) return;
+    if (barra.parentNode !== document.body) document.body.appendChild(barra);
+    var x0 = null, s0 = 0, movido = false;
+    barra.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; s0 = barra.scrollLeft; movido = false; }, { passive: true });
+    barra.addEventListener("touchmove", function (e) {
+      if (x0 === null) return;
+      var dx = e.touches[0].clientX - x0;
+      if (Math.abs(dx) > 4) { movido = true; e.preventDefault(); barra.scrollLeft = s0 - dx; }
+    }, { passive: false });
+    barra.addEventListener("touchend", function () { x0 = null; }, { passive: true });
+    barra.addEventListener("click", function (e) { if (movido) { e.preventDefault(); e.stopPropagation(); movido = false; } }, true);
+  })();
   document.getElementById("panel-cerrar").addEventListener("click", cerrar);
   document.getElementById("panel-ant").addEventListener("click", function () { var i = orden.indexOf(capitulo); if (i > 0) abrir(orden[i - 1]); });
   document.getElementById("panel-sig").addEventListener("click", function () { var i = orden.indexOf(capitulo); if (i < orden.length - 1) abrir(orden[i + 1]); });
