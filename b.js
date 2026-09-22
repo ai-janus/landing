@@ -295,7 +295,7 @@
     cobertura.style.transition = "none"; cobertura.style.width = "0%";
     void cobertura.offsetWidth; // fuerza el reflow: el ancho 0 queda aplicado antes de animar
     if (dur) { cobertura.style.transition = "width " + dur + "ms cubic-bezier(.4,0,.2,1)"; }
-    cobertura.style.width = "100%";
+    cobertura.style.width = "calc(100% + " + (movil ? 10 : 16) + "px)"; // compensa el desborde izquierdo: cubre hasta la última columna
     var inicio = Date.now(), cerrado = false;
     function cerrarBarrida() {
       if (cerrado) return; cerrado = true;

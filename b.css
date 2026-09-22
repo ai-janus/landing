@@ -134,7 +134,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .trama .muestra { position: absolute; left: -8px; top: -10px; bottom: -10px; width: calc(5 / 55 * 100% + 21px); border: 1.5px solid var(--accent); border-radius: 6px; background: color-mix(in srgb, var(--accent) 8%, transparent); transform: scaleX(0); transform-origin: left center; transition: transform 900ms cubic-bezier(.2,.7,.2,1), background-color 400ms ease; pointer-events: none; }
 .trama--lista .muestra { transform: scaleX(1); }
 .muestra__rotulo { position: absolute; left: 0; bottom: -24px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 500ms ease; }
-.cobertura { position: absolute; left: -8px; top: -10px; bottom: -10px; width: 0%; border-radius: 6px; background: color-mix(in srgb, var(--accent) 7%, transparent); pointer-events: none; opacity: 0; }
+.cobertura { position: absolute; left: -8px; top: -10px; bottom: -10px; width: 0; border-radius: 6px; background: color-mix(in srgb, var(--accent) 7%, transparent); pointer-events: none; opacity: 0; }
 .cobertura::after { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; width: 2px; background: var(--accent); box-shadow: -14px 0 24px color-mix(in srgb, var(--accent) 22%, transparent); border-radius: 2px; transition: opacity 400ms ease; }
 .cobertura--lista::after { opacity: 0; }
 .cobertura__rotulo { position: absolute; left: 0; bottom: -44px; white-space: nowrap; font-size: var(--t-sm); color: var(--accent); opacity: 0; transition: opacity 300ms ease; }
@@ -172,7 +172,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* capítulos: píldoras abajo */
 .capitulos { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 10px 0 8px; position: relative; z-index: 6; }
 .capitulos::-webkit-scrollbar { display: none; }
-.cap { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px 0 12px; border-radius: 999px; border: 1px solid var(--hair-strong); background: color-mix(in srgb, var(--white) 70%, transparent); font-size: 14px; font-weight: var(--weight-medium); white-space: nowrap; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+.cap { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 8px; height: 42px; padding: 0 16px 0 12px; border-radius: 999px; border: 1px solid var(--hair-strong); background: color-mix(in srgb, var(--white) 70%, transparent); font-size: 14px; font-weight: var(--weight-medium); white-space: nowrap; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
 .cap .n { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--gray-400); }
 .cap:hover { border-color: var(--ink); }
 .cap.activa { background: var(--ink); color: var(--paper); border-color: var(--ink); }
@@ -319,7 +319,7 @@ a.perfil__n:hover { color: var(--accent); }
   /* Píldoras flotantes fijas abajo, en tinta: barra de navegación siempre a mano */
   .capitulos { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: flex-start;
     gap: 6px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: transparent;
-    -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%); }
+    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x; scroll-padding: 0 16px; }
   .capitulos::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 50px; z-index: -1;
     background: linear-gradient(to top, var(--paper) 48%, color-mix(in srgb, var(--paper) 72%, transparent) 80%, transparent 100%); pointer-events: none; }
   .cap { height: 40px; font-size: 13px; padding: 0 14px 0 12px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
