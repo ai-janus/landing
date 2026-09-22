@@ -332,3 +332,9 @@ html.js .entra.visto { opacity: 1; transform: none; }
 html.js .lienzo.entra { transform: none; }
 .escena.intro .muestra__rotulo { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { html.js .entra { opacity: 1; transform: none; transition: none; } }
+
+/* LinkedIn: glifo chico junto a los nombres y en el pie */
+.in { width: 13px; height: 13px; fill: currentColor; display: inline-block; vertical-align: -1px; margin-left: 4px; color: var(--gray-400); transition: color 140ms ease; }
+a.perfil__n:hover .in, .pie__in:hover .in { color: var(--accent); }
+.pie__in { display: inline-flex; align-items: center; gap: 4px; }
+.pie__in .in { margin-left: 0; }
