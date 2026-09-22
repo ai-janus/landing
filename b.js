@@ -215,8 +215,20 @@
     recorrido.timer = window.setTimeout(siguiente, (n === 3 || n === 8 ? 2600 : 1900) * (movil ? 1.3 : 1));
   }
   function pausar() { recorrido.pausaHasta = Date.now() + 5000; }
-  el.addEventListener("mousemove", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
-  el.addEventListener("click", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
+  var tactil = window.matchMedia("(hover: none)").matches;
+  if (!tactil) {
+    el.addEventListener("mousemove", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
+    el.addEventListener("click", function (e) { pausar(); var p = cercano(e.clientX, e.clientY); if (p) mostrar(p); });
+  } else {
+    // En táctil no hay hover: se explora arrastrando el dedo por la grilla (radio amplio, sin scroll dentro del bloque).
+    RADIO = 26;
+    var tocando = false;
+    function alTocar(e) { var t = e.touches[0]; if (!t) return; pausar(); centros = null; var p = cercano(t.clientX, t.clientY); if (p) mostrar(p); }
+    el.addEventListener("touchstart", function (e) { tocando = true; alTocar(e); }, { passive: true });
+    el.addEventListener("touchmove", function (e) { if (!tocando) return; e.preventDefault(); var t = e.touches[0]; pausar(); var p = cercano(t.clientX, t.clientY); if (p && p !== actual) mostrar(p); }, { passive: false });
+    el.addEventListener("touchend", function () { tocando = false; pausar(); }, { passive: true });
+    el.addEventListener("touchcancel", function () { tocando = false; }, { passive: true });
+  }
   // Entrada coreografiada: guía el orden de lectura (título → subtítulo → cifras → grilla → franja
   // auditada → barrida de cobertura → capítulos → recorrido). Cualquier interacción la completa al instante.
   var arrancado = false, introLista = false, introTimers = [];
@@ -227,7 +239,9 @@
     if (introLista) return; introLista = true;
     introTimers.forEach(function (t) { window.clearTimeout(t); });
     ver(entra); el.classList.add("trama--lista"); escena.classList.remove("intro");
-    if (!escena.classList.contains("cubierto")) barrer(arrancarRecorrido); else arrancarRecorrido();
+    // el recorrido arranca sí o sí (aunque un capítulo abierto cancele la barrida de entrada)
+    if (!escena.classList.contains("cubierto")) barrer();
+    window.setTimeout(arrancarRecorrido, 600);
   }
   function intro() {
     if (reducido) { terminarIntro(); return; }
@@ -307,7 +321,7 @@
     capitulo = id;
     caps.forEach(function (c) { c.classList.toggle("activa", c.getAttribute("data-cap") === id); });
     for (var h = 0; h < hojas.length; h++) hojas[h].classList.toggle("activa", hojas[h].getAttribute("data-cap") === id);
-    panel.hidden = false; escena.classList.add("abierto");
+    panel.hidden = false; panel.classList.remove("plegado"); escena.classList.add("abierto");
     var i = orden.indexOf(id), hoja = document.querySelector('.hoja[data-cap="' + id + '"]');
     document.getElementById("panel-ant").disabled = i <= 0; document.getElementById("panel-sig").disabled = i >= orden.length - 1;
     document.getElementById("panel-num").textContent = ("0" + (i + 1)) + " · " + (hoja ? hoja.getAttribute("data-nombre") : "");
@@ -316,7 +330,14 @@
     aplicarModo();
     recorrido.pausaHasta = 0;
   }
-  function cerrar() { capitulo = null; panel.hidden = true; escena.classList.remove("abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
+  // Celular: arrastrar el asa hacia abajo pliega el panel a su cabecera (la grilla y su tarjeta quedan a la vista); hacia arriba lo despliega.
+  (function () {
+    var asa = panel.querySelector(".panel__asa"), cab = panel.querySelector(".panel__cab"), y0 = null;
+    function inicio(e) { y0 = e.touches[0].clientY; }
+    function fin(e) { if (y0 === null) return; var dy = e.changedTouches[0].clientY - y0; y0 = null; if (dy > 24) panel.classList.add("plegado"); else if (dy < -24) panel.classList.remove("plegado"); else panel.classList.toggle("plegado"); }
+    [asa, cab].forEach(function (z) { if (!z) return; z.addEventListener("touchstart", inicio, { passive: true }); z.addEventListener("touchend", fin, { passive: true }); });
+  })();
+  function cerrar() { capitulo = null; panel.hidden = true; panel.classList.remove("plegado"); escena.classList.remove("abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
   caps.forEach(function (c) { c.addEventListener("click", function () { var id = c.getAttribute("data-cap"); if (capitulo === id) cerrar(); else abrir(id); }); });
   document.getElementById("panel-cerrar").addEventListener("click", cerrar);
   document.getElementById("panel-ant").addEventListener("click", function () { var i = orden.indexOf(capitulo); if (i > 0) abrir(orden[i - 1]); });
@@ -326,7 +347,7 @@
     if (e.key === "ArrowRight") { var i = orden.indexOf(capitulo); abrir(orden[Math.min(orden.length - 1, i + 1)]); }
     if (e.key === "ArrowLeft") { var j = orden.indexOf(capitulo); if (j > 0) abrir(orden[j - 1]); }
   });
-  if (window.matchMedia("(hover: none)").matches) { var pista = document.querySelector(".pista"); if (pista) pista.textContent = "Toque los puntos rojos: cada uno es un caso."; var pp = document.getElementById("pie-pista"); if (pp) pp.textContent = "Toque un capítulo para recorrerlo"; }
+  if (window.matchMedia("(hover: none)").matches) { var pista = document.querySelector(".pista"); if (pista) pista.textContent = "Deslizá el dedo por los puntos: cada uno es un caso."; var pp = document.getElementById("pie-pista"); if (pp) pp.textContent = "Tocá un capítulo para recorrerlo"; }
   // capítulo por URL (#motor, #auditores...) para compartir y para verificar estados
   function desdeHash() { var id = (location.hash || "").replace("#", ""); if (orden.indexOf(id) >= 0) { terminarIntro(); abrir(id); } }
   window.addEventListener("hashchange", desdeHash); window.setTimeout(desdeHash, 350);
