@@ -187,9 +187,13 @@
     if (movil || window.getComputedStyle(tip).position !== "absolute") { tip.style.left = ""; tip.style.top = ""; return; }
     var w = tip.offsetWidth, h = tip.offsetHeight, tw = el.clientWidth;
     var cx = el.offsetLeft + p.offsetLeft + p.offsetWidth / 2, cy = el.offsetTop + p.offsetTop + p.offsetHeight / 2;
-    var left = Math.max(0, Math.min(cx - 16, tw - w)), arriba = cy - h - 14 >= el.offsetTop - 6;
+    var left = Math.max(0, Math.min(cx - 16, tw - w));
+    // arriba si entra arriba; si no, abajo solo si entra dentro del lienzo; si no entra en ningún lado, arriba pegado al borde
+    var cabeArriba = cy - h - 14 >= el.offsetTop - 6, cabeAbajo = cy + 14 + h <= el.offsetTop + el.offsetHeight + 8;
+    var arriba = cabeArriba || !cabeAbajo;
     tip.classList.toggle("tip--abajo", !arriba);
-    tip.style.left = left + "px"; tip.style.top = (arriba ? cy - h - 14 : cy + 14) + "px";
+    var top = arriba ? Math.max(el.offsetTop - 6, cy - h - 14) : cy + 14;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
     tip.style.setProperty("--tip-x", Math.max(8, Math.min(w - 16, cx - left - 4)) + "px");
   }
   function ocultar() { if (actual) actual.classList.remove("activa"); actual = null; relieve(null); tip.hidden = true; }
@@ -271,11 +275,12 @@
   // ---------- capítulos: cada uno cambia lo que hace la grilla ----------
   var caps = Array.prototype.slice.call(document.querySelectorAll(".cap")), hojas = document.querySelectorAll(".hoja"), panel = document.getElementById("panel");
   var orden = caps.map(function (c) { return c.getAttribute("data-cap"); });
-  var barridoTimer = null;
+  var barridoTimer = null, barridoCierre = null;
   function quitarCobertura() {
     escena.classList.remove("cubierto");
     for (var k = 0; k < puntos.length; k++) puntos[k].classList.remove("detectada");
     if (barridoTimer) window.cancelAnimationFrame(barridoTimer); barridoTimer = null;
+    if (barridoCierre) window.clearTimeout(barridoCierre); barridoCierre = null;
     cobertura.style.transition = "none"; cobertura.style.width = "0%"; cobertura.classList.remove("cobertura--lista"); void cobertura.offsetWidth;
   }
   function barrer(alTerminar) {
@@ -289,13 +294,22 @@
     void cobertura.offsetWidth; // fuerza el reflow: el ancho 0 queda aplicado antes de animar
     if (dur) { cobertura.style.transition = "width " + dur + "ms cubic-bezier(.4,0,.2,1)"; }
     cobertura.style.width = "100%";
-    var inicio = Date.now();
+    var inicio = Date.now(), cerrado = false;
+    function cerrarBarrida() {
+      if (cerrado) return; cerrado = true;
+      if (barridoTimer) window.cancelAnimationFrame(barridoTimer); barridoTimer = null;
+      for (var q = 0; q < puntos.length; q++) puntos[q].classList.add("detectada");
+      cobertura.classList.add("cobertura--lista");
+      if (alTerminar) window.setTimeout(alTerminar, 500);
+    }
     (function paso() {
+      if (cerrado) return;
       var borde = cobertura.getBoundingClientRect().right, listo = dur ? (Date.now() - inicio >= dur + 60) : true;
       for (var q = 0; q < puntos.length; q++) if (listo || centros[q][0] <= borde) puntos[q].classList.add("detectada");
-      if (!listo) barridoTimer = window.requestAnimationFrame(paso);
-      else { cobertura.classList.add("cobertura--lista"); if (alTerminar) window.setTimeout(alTerminar, 500); }
+      if (!listo) barridoTimer = window.requestAnimationFrame(paso); else cerrarBarrida();
     })();
+    // cierre garantizado por temporizador: si los frames se frenan (pestaña en segundo plano), la barrida termina igual
+    barridoCierre = window.setTimeout(cerrarBarrida, dur + 120);
   }
   function limpiarModo() {
     var cubierto = escena.classList.contains("cubierto");

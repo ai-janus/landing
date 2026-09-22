@@ -170,7 +170,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tip__t { font-size: var(--t-sm); line-height: 1.45; color: var(--text-secondary); }
 
 /* capítulos: píldoras abajo */
-.capitulos { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 10px 0 8px; }
+.capitulos { display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 10px 0 8px; position: relative; z-index: 6; }
 .capitulos::-webkit-scrollbar { display: none; }
 .cap { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px 0 12px; border-radius: 999px; border: 1px solid var(--hair-strong); background: color-mix(in srgb, var(--white) 70%, transparent); font-size: 14px; font-weight: var(--weight-medium); white-space: nowrap; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
 .cap .n { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--gray-400); }
