@@ -337,7 +337,7 @@
     capitulo = id;
     caps.forEach(function (c) { c.classList.toggle("activa", c.getAttribute("data-cap") === id); });
     for (var h = 0; h < hojas.length; h++) hojas[h].classList.toggle("activa", hojas[h].getAttribute("data-cap") === id);
-    panel.hidden = false; panel.classList.remove("plegado"); escena.classList.add("abierto"); document.body.classList.add("cap-abierto");
+    window.clearTimeout(cierreTimer); panel.hidden = false; panel.classList.remove("cerrando"); escena.classList.add("abierto"); document.body.classList.add("cap-abierto");
     var i = orden.indexOf(id), hoja = document.querySelector('.hoja[data-cap="' + id + '"]');
     document.getElementById("panel-ant").disabled = i <= 0; document.getElementById("panel-sig").disabled = i >= orden.length - 1;
     document.getElementById("panel-num").textContent = ("0" + (i + 1)) + " · " + (hoja ? hoja.getAttribute("data-nombre") : "");
@@ -348,12 +348,39 @@
   }
   // Celular: arrastrar el asa hacia abajo pliega el panel a su cabecera (la grilla y su tarjeta quedan a la vista); hacia arriba lo despliega.
   (function () {
-    var asa = panel.querySelector(".panel__asa"), cab = panel.querySelector(".panel__cab"), y0 = null;
-    function inicio(e) { y0 = e.touches[0].clientY; }
-    function fin(e) { if (y0 === null) return; var dy = e.changedTouches[0].clientY - y0; y0 = null; if (dy > 24) panel.classList.add("plegado"); else if (dy < -24) panel.classList.remove("plegado"); else panel.classList.toggle("plegado"); }
-    [asa, cab].forEach(function (z) { if (!z) return; z.addEventListener("touchstart", inicio, { passive: true }); z.addEventListener("touchend", fin, { passive: true }); });
+    var asa = panel.querySelector(".panel__asa"), cab = panel.querySelector(".panel__cab"), y0 = null, dy = 0;
+    function inicio(e) { y0 = e.touches[0].clientY; dy = 0; panel.style.transition = "none"; }
+    function mover(e) {
+      if (y0 === null) return;
+      dy = Math.max(0, e.touches[0].clientY - y0);          // solo hacia abajo
+      if (dy > 3) { e.preventDefault(); panel.style.transform = "translateY(" + dy + "px)"; }
+    }
+    function fin() {
+      if (y0 === null) return;
+      y0 = null; panel.style.transition = ""; panel.style.transform = "";
+      if (dy > 60) cerrar();                                  // deslizar hacia abajo cierra el capítulo
+    }
+    [asa, cab].forEach(function (z) {
+      if (!z) return;
+      z.addEventListener("touchstart", inicio, { passive: true });
+      z.addEventListener("touchmove", mover, { passive: false });
+      z.addEventListener("touchend", fin, { passive: true });
+      z.addEventListener("touchcancel", fin, { passive: true });
+    });
   })();
-  function cerrar() { capitulo = null; panel.hidden = true; panel.classList.remove("plegado"); escena.classList.remove("abierto"); document.body.classList.remove("cap-abierto"); history.replaceState(null, "", location.pathname); caps.forEach(function (c) { c.classList.remove("activa"); }); limpiarModo(); }
+  var cierreTimer = null;
+  function cerrar() {
+    capitulo = null;
+    escena.classList.remove("abierto"); document.body.classList.remove("cap-abierto");
+    history.replaceState(null, "", location.pathname);
+    caps.forEach(function (c) { c.classList.remove("activa"); });
+    limpiarModo();
+    window.clearTimeout(cierreTimer);
+    if (window.matchMedia("(max-width: 639px)").matches && !panel.hidden) {
+      panel.classList.add("cerrando");                        // baja y se desvanece antes de ocultarse
+      cierreTimer = window.setTimeout(function () { panel.hidden = true; panel.classList.remove("cerrando"); }, 320);
+    } else { panel.hidden = true; panel.classList.remove("cerrando"); }
+  }
   caps.forEach(function (c) { c.addEventListener("click", function () { var id = c.getAttribute("data-cap"); if (capitulo === id) cerrar(); else abrir(id); }); });
 
   // Barra de capítulos en celular: fuera del contenedor recortado (iOS no desplaza un fixed dentro de
